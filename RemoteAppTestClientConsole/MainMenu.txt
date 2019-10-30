@@ -1,0 +1,29 @@
+#include "MainMenu.h"
+
+void ClearScreenAndShowHeader()
+{
+	system("CLS");
+	std::cout << "********************************************************\n* Bruker Daltonics SPR Remote Connection Sample Client *\n********************************************************";
+	std::cout << "\n";
+}
+
+MainMenu::ACTION ShowMainMenu()
+{
+	ClearScreenAndShowHeader();
+	std::cout << "\ns\t- Status";
+	std::cout << "\nq\t- quit";
+
+	std::cout << "\nChoice: ";
+	char input;
+	std::cin >> input;
+
+	switch (input)
+	{
+	case 's':
+		return status;
+	case 'q':
+		return quit;
+	default:
+		return showMainMenu;
+	}
+}
