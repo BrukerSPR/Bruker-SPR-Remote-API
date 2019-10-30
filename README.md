@@ -3,7 +3,7 @@ The SPR machines of Bruker offer a remote API to allow client frameworks to conn
 To find out more about the SPR machines please go to: https://www.bruker.com/products/surface-plasmon-resonance/sierra-spr-32/overview.html
 
 # Overview
-In this repository you will find the code of the demo clients mentioned in the documentation of the Bruker SPR Remote API, which is also part of this repository. Each demo client has its own independent project. A brief description of the demo clients can be found in the following sections.
+In this repository you will find the code of the demo clients mentioned in the documentation of the Bruker SPR Remote API, which is also part of this repository (see API_Doku.pdf). Each demo client has its own independent project. A brief description of the demo clients can be found in the following sections.
 
 # RemoteAppTestClient 
 This is a Windows Forms application purely written in C#. Its client object is based on the System.ServiceMode.ClientBase class using a IClientChannel that implements the same data contract interface as the server (i.e. the control software). The application provides controls to test almost all methods of the API and connects to the service using webHttp or TCP. The connection can be configured in the application's config file.
