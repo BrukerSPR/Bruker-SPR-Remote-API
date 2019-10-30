@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>3dbe1b3f-688b-4a6c-8c59-969a9f1df439</ProjectGuid>
+    <ProjectGuid>{609f70be-835c-4ace-b5ef-eb69e7c59ded}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>RemoteAppTestClientPython.py</StartupFile>
     <SearchPath>

@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D2777F62-E9B1-4ED7-B495-5C561F435887}</ProjectGuid>
+    <ProjectGuid>{030E4529-3013-4C0C-9CD6-0F68E12B8FF1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TestClient</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>

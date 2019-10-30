@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{873121E8-AE91-46EB-806E-1A6300AB99B2}</ProjectGuid>
+    <ProjectGuid>{D3DF1653-786E-4C8F-A186-F48E808F3F71}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RemoteAppTestClient</RootNamespace>
