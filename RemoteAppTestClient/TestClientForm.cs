@@ -522,12 +522,15 @@ namespace RemoteAppTestClient
         /// </summary>
         private void StatusCheck()
         {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(this.StatusCheck);
+                return;
+            }
+
             UpdateOperationMode();
-
             UpdateChipStatus();
-
             UpdateSamplePlateStatus();
-
             UpdateSamplePlateID();
 
             if (_client.HasErrors())
@@ -648,12 +651,12 @@ namespace RemoteAppTestClient
 
                 // state docked
                 case 0:
-                    status = "Docked";
+                    status = "Undocked";
                     break;
                 
                 // state undocked
                 case 1:
-                    status = "Undocked";
+                    status = "Docked";
                     break;
             }
 
@@ -779,5 +782,15 @@ namespace RemoteAppTestClient
             UpdateErrors();
         }
         #endregion
+
+        private void btnPlateOut_Click(object sender, EventArgs e)
+        {
+            _client.MoveSamplePlateTrayOut();
+        }
+
+        private void plateInButton_Click(object sender, EventArgs e)
+        {
+            _client.MoveSamplePlateTrayIn();
+        }
     }
 }
