@@ -524,7 +524,7 @@ namespace RemoteAppTestClient
         {
             if (this.InvokeRequired)
             {
-                this.Invoke(() => this.StatusCheck());
+                this.Invoke(new Action(() => this.StatusCheck()));
                 return;
             }
 
