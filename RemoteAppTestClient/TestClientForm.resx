@@ -136,6 +136,15 @@
     <value>True</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="buttonPlateID.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAkElEQVRIS+2SywmAMBAF049NWISfg/bh
+        SfRozwpxYnZBCIKfPUkGHpgnOzFBl8k8wntfyKM9yCuykkUqO07ywCS1DQizPAXhezkDI2lkmcC7lqh8
+        lvoeDJRx7hAkm9C9lysMDnHeb6STOvQ1sblzBOdNemInVxDN0XeIv13LFQj1JAHbX1FBHE5i++WZP+Hc
+        DpqK8mK0gRslAAAAAElFTkSuQmCC
+</value>
+  </data>
   <data name="btnTypesClear.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
@@ -143,15 +152,6 @@
         P+hhnzNbLRMQQnbYzeakBY3DON2JCZgeboqZTWhDo7eqMDOgFS3einGDONDg7QK98xmxejuGYRn302b2
         QsWX0AtnPoKhGkDdFp7BWASh/4RnCFBgPmc9r3X1fr5CQSjvWrTv/Aph/RYgqN8RKQD1uWSM1SDqtkUw
         hAH0fl+E4e6/ilkGFF6iZnx29tbDvUjpDev9ncp9AfMJAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="buttonSetSamplePlateID.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
-        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAkElEQVRIS+2SywmAMBAF049NWISfg/bh
-        SfRozwpxYnZBCIKfPUkGHpgnOzFBl8k8wntfyKM9yCuykkUqO07ywCS1DQizPAXhezkDI2lkmcC7lqh8
-        lvoeDJRx7hAkm9C9lysMDnHeb6STOvQ1sblzBOdNemInVxDN0XeIv13LFQj1JAHbX1FBHE5i++WZP+Hc
-        DpqK8mK0gRslAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="btnUpdateError.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

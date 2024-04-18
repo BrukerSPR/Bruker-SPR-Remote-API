@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,10 +8,10 @@ namespace RemoteAppTestClient
 {
     public partial class TestClientForm : Form
     {
-
+        private readonly SystemType _systemType;
         private MASS1RemoteServiceClient _client;
 
-        //MEthods and Runsets from the applicaiton
+        //Methods and Runsets from the application
         string[] _methodTypes = new string[] { };
         string[] _runsetTypes = new string[] { };
         string[] _methodNames = new string[] { };
@@ -22,11 +21,25 @@ namespace RemoteAppTestClient
         /// <summary>
         /// Constructor
         /// </summary>
-        public TestClientForm()
+        public TestClientForm(SystemType systemType)
         {
             InitializeComponent();
+            _systemType = systemType;
 
             tabControl.Enabled = false;
+
+            if (systemType == SystemType.MASS1)
+            {
+                btnPlateOutOrDoorOpen.Text = "Plate Out";
+                btnPlateInOrDoorClose.Text = "Plate In";
+                lblTrayOrDoorStatus.Text = "Plate Tray Status";
+            }
+            else
+            {
+                btnPlateOutOrDoorOpen.Text = "Open Door";
+                btnPlateInOrDoorClose.Text = "Close Door";
+                lblTrayOrDoorStatus.Text = "Side Door Status";
+            }
         }
 
 
@@ -43,7 +56,7 @@ namespace RemoteAppTestClient
 
                 tabControl.Enabled = true;
 
-                GetMethodsandRunsets();
+                GetMethodsAndRunsets();
                 SetupTestClient();
 
                 _cts = new CancellationTokenSource();
@@ -87,7 +100,7 @@ namespace RemoteAppTestClient
         /// <summary>
         /// Gets the names of the methods and runsets
         /// </summary>
-        public void GetMethodsandRunsets()
+        public void GetMethodsAndRunsets()
         {
             _methodTypes = _client.GetAssayTypesOfAllMethods();
             _runsetTypes = _client.GetAssayTypesOfAllRunsets();
@@ -110,21 +123,21 @@ namespace RemoteAppTestClient
             comboBoxMethods.SelectedIndex = -1;
             comboBoxMethods.Items.Clear();
 
-            // Set method names in the comboxbox list of option 
+            // Set method names in the combo box list of option 
             foreach (string methodName in _methodNames)
                 comboBoxMethods.Items.Add(methodName);
 
             comboBoxRunsets.SelectedIndex = -1;
             comboBoxRunsets.Items.Clear();
 
-            // Set runset names in the comboxbox list of option 
+            // Set runset names in the combo box list of option 
             foreach (string runsetName in _runsetNames)
                 comboBoxRunsets.Items.Add(runsetName);
 
             comboBoxMaintenance.SelectedIndex = -1;
             comboBoxMaintenance.Items.Clear();
 
-            // Set manintenance commands names in the comboxbox list of option 
+            // Set maintenance commands names in the combo box list of option 
             foreach (string mainCmd in _maintenanceCommands)
                 comboBoxMaintenance.Items.Add(mainCmd);
 
@@ -138,7 +151,7 @@ namespace RemoteAppTestClient
             textBoxSetSamplePlateID.Text = string.Empty;
             textBoxSetSamplePlateID.Enabled = false;
 
-            buttonSetSamplePlateID.Visible = buttonSetSamplePlateID.Enabled = false;
+            buttonPlateID.Visible = buttonPlateID.Enabled = false;
 
             SetViewState();
         }
@@ -215,7 +228,7 @@ namespace RemoteAppTestClient
             comboBoxRunsets.Enabled = false;
 
             if (InvokeRequired)
-                Invoke(new Action<string, string, string, string, string>(SetSeletedItems), new object[] { _client.GetNameOfCurrentRunset(), _client.GetAssayTypeOfRunset(_client.GetNameOfCurrentRunset()),
+                Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { _client.GetNameOfCurrentRunset(), _client.GetAssayTypeOfRunset(_client.GetNameOfCurrentRunset()),
                 _client.GetNameOfCurrentMethod(),_client.GetAssayTypeOfMethod(_client.GetNameOfCurrentMethod()), _client.GetSamplePlateId(selectedRunsetListBox.SelectedIndex)  });
         }
 
@@ -235,14 +248,13 @@ namespace RemoteAppTestClient
             comboBoxRunsets.Enabled = false;
 
             if (InvokeRequired)
-                Invoke(new Action<string, string, string, string, string>(SetSeletedItems), new object[] { "", "", _client.GetNameOfCurrentMethod(), _client.GetAssayTypeOfMethod(_client.GetNameOfCurrentMethod()), _client.GetSamplePlateId(0) });
+                Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { "", "", _client.GetNameOfCurrentMethod(), _client.GetAssayTypeOfMethod(_client.GetNameOfCurrentMethod()), _client.GetSamplePlateId(0) });
         }
-
 
         /// <summary>
         /// Sets the selected item info
         /// </summary>
-        private void SetSeletedItems(string sr, string srt, string sm, string smt, string spid)
+        private void SetSelectedItems(string sr, string srt, string sm, string smt, string spid)
         {
             textBoxRunsets.Text = sr;
 
@@ -258,35 +270,33 @@ namespace RemoteAppTestClient
         /// <summary>
         /// Set the sample plate id on click
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void buttonSetSamplePlateID_Click(object sender, EventArgs e)
+        private void buttonPlateID_Click(object sender, EventArgs e)
         {
-            buttonSetSamplePlateID.Enabled = false;
-            buttonSetSamplePlateID.Visible = false;
+            buttonPlateID.Enabled = false;
+            buttonPlateID.Visible = false;
 
-            bool  setplateID = _client.SetSamplePlateId(selectedRunsetListBox.SelectedIndex, textBoxSetSamplePlateID.Text);
+            bool setPlateID = string.IsNullOrEmpty(textBoxDeckLocation.Text) ?
+                _client.SetSamplePlateId(selectedRunsetListBox.SelectedIndex, textBoxSetSamplePlateID.Text) :
+                _client.SetPlateId(selectedRunsetListBox.SelectedIndex, textBoxDeckLocation.Text, textBoxSetSamplePlateID.Text);
 
-            if (!setplateID)
+            if (!setPlateID)
             {
                 if (selectedRunsetListBox.SelectedIndex > _client.GetMethodNamesOfRunset(_client.GetNameOfCurrentRunset()).Count() - 1)
-                    DispalyWarningMessage("Selected method index is out of range! Check selected method again!", !setplateID);
+                    DisplayWarningMessage("Selected method index is out of range! Check selected method again!", !setPlateID);
                 else
-                    DispalyWarningMessage("Selected method doesnot contain the sample plate. Check for Errors!", !setplateID);
+                    DisplayWarningMessage("Selected method does not contain the sample plate. Check for Errors!", !setPlateID);
             }
             else
-                DispalyWarningMessage(string.Empty, !setplateID);
+                DisplayWarningMessage(string.Empty, !setPlateID);
         }
 
         /// <summary>
         /// Enable edit sample plate Id
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void textBoxSetSamplePlateID_TextChanged(object sender, EventArgs e)
         {
-            buttonSetSamplePlateID.Visible = true;
-            buttonSetSamplePlateID.Enabled = true;
+            buttonPlateID.Visible = true;
+            buttonPlateID.Enabled = true;
         }
 
         /// <summary>
@@ -297,10 +307,10 @@ namespace RemoteAppTestClient
             textBoxSetSamplePlateID.Enabled = true;
 
             if (InvokeRequired)
-                Invoke(new Action<string, string, string, string, string>(SetSeletedItems), new object[] { _client.GetNameOfCurrentRunset(), _client.GetAssayTypeOfRunset(_client.GetNameOfCurrentRunset()) ,
+                Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { _client.GetNameOfCurrentRunset(), _client.GetAssayTypeOfRunset(_client.GetNameOfCurrentRunset()) ,
                 selectedRunsetListBox.Items.ToString(),_client.GetAssayTypeOfMethod(selectedRunsetListBox.Items.ToString()), _client.GetSamplePlateId(selectedRunsetListBox.SelectedIndex) });
             else
-                SetSeletedItems(_client.GetNameOfCurrentRunset(), _client.GetAssayTypeOfRunset(_client.GetNameOfCurrentRunset()),
+                SetSelectedItems(_client.GetNameOfCurrentRunset(), _client.GetAssayTypeOfRunset(_client.GetNameOfCurrentRunset()),
                 _client.GetNameOfCurrentMethod(), _client.GetAssayTypeOfMethod(selectedRunsetListBox.Items.ToString()), _client.GetSamplePlateId(selectedRunsetListBox.SelectedIndex));
         }
 
@@ -320,12 +330,12 @@ namespace RemoteAppTestClient
                 comboBoxMethods.Items.Clear();
                 comboBoxRunsets.Items.Clear();
 
-                // Set method names in the comboxbox list of option 
+                // Set method names in the combo box list of option 
                 foreach (string methodName in _client.GetNamesOfMethodsOfAssayType(comboBoxTypes.SelectedItem.ToString()))
                     comboBoxMethods.Items.Add(methodName);
 
 
-                // Set runset names in the comboxbox list of option 
+                // Set runset names in the combo box list of option 
                 foreach (string runsetName in _client.GetNamesOfRunsetsOfAssayType(comboBoxTypes.SelectedItem.ToString()))
                     comboBoxRunsets.Items.Add(runsetName);
 
@@ -335,7 +345,7 @@ namespace RemoteAppTestClient
         }
 
         /// <summary>
-        /// Sets the selected method and creats a runset using the selected method
+        /// Sets the selected method and creates a runset using the selected method
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -347,9 +357,9 @@ namespace RemoteAppTestClient
                 bool selectMethod = _client.SelectMethod(comboBoxMethods.SelectedItem.ToString());
 
                 if (!selectMethod)
-                    DispalyWarningMessage("Can not create runset. Check Operation Mode!", !selectMethod);
+                    DisplayWarningMessage("Can not create runset. Check Operation Mode!", !selectMethod);
                 else
-                    DispalyWarningMessage(string.Empty, !selectMethod);
+                    DisplayWarningMessage(string.Empty, !selectMethod);
 
                 //string[] selectedMethod = new string[1] { comboBoxMethods.SelectedItem.ToString() };
                 //bool createRunsetStatus = _client.CreateRunset(selectedMethod);
@@ -357,12 +367,12 @@ namespace RemoteAppTestClient
                 //if (!createRunsetStatus)
                 //{
                 //    if(!_methodNames.Contains(comboBoxMethods.SelectedItem.ToString()))
-                //        DispalyWarningMessage("Can not create runset. Selected method does not exist in library", !createRunsetStatus);
+                //        DisplayWarningMessage("Can not create runset. Selected method does not exist in library", !createRunsetStatus);
                 //    else
-                //        DispalyWarningMessage("Can not create runset. Check Operation Mode!", !createRunsetStatus);
+                //        DisplayWarningMessage("Can not create runset. Check Operation Mode!", !createRunsetStatus);
                 //}
                 //else
-                //    DispalyWarningMessage(string.Empty, !createRunsetStatus);
+                //    DisplayWarningMessage(string.Empty, !createRunsetStatus);
 
                 UpdateInfoSelectedMethod();
             }
@@ -377,12 +387,12 @@ namespace RemoteAppTestClient
                 if (!selectedRunsetStatus)
                 {
                     if (!_runsetNames.Contains(comboBoxMethods.SelectedItem.ToString()))
-                        DispalyWarningMessage("Can not find selected runset in the list. Check the name of the runset in the provided list!", !selectedRunsetStatus);
+                        DisplayWarningMessage("Can not find selected runset in the list. Check the name of the runset in the provided list!", !selectedRunsetStatus);
                     else
-                        DispalyWarningMessage("Can not select runset. Check for error messages!", !selectedRunsetStatus);
+                        DisplayWarningMessage("Can not select runset. Check for error messages!", !selectedRunsetStatus);
                 }
                 else
-                    DispalyWarningMessage(string.Empty, !selectedRunsetStatus);
+                    DisplayWarningMessage(string.Empty, !selectedRunsetStatus);
 
                 UpdateInfoSelectedRunset();
             }
@@ -398,7 +408,7 @@ namespace RemoteAppTestClient
             }
         }
 
-        private void checkBoxrunMaintenanceCmd_CheckedChanged(object sender, EventArgs e)
+        private void checkBoxRunMaintenanceCmd_CheckedChanged(object sender, EventArgs e)
         {
 
             comboBoxMaintenance.Enabled = checkBoxrunMaintenanceCmd.Checked;
@@ -412,16 +422,16 @@ namespace RemoteAppTestClient
         private void btnStart_Click(object sender, EventArgs e)
         {
 
-            int operationmode = _client.GetOperationMode();
+            int operationMode = _client.GetOperationMode();
 
-            if (operationmode == 1)
+            if (operationMode == 1)
             {
                 bool startStatus = _client.ResumeRunset();
 
                 if (!startStatus)
-                    DispalyWarningMessage("Can not resume runset. Check for errors!.", !startStatus);
+                    DisplayWarningMessage("Can not resume runset. Check for errors!.", !startStatus);
                 else
-                    DispalyWarningMessage(string.Empty, !startStatus);
+                    DisplayWarningMessage(string.Empty, !startStatus);
             }
             else
             {
@@ -443,15 +453,15 @@ namespace RemoteAppTestClient
 
                 if (!startStatus)
                 {
-                    if (operationmode == 11)
-                        DispalyWarningMessage("'Reset Required' from the mainentance commnands!", !startStatus);
+                    if (operationMode == 11)
+                        DisplayWarningMessage("'Reset Required' from the maintenance commands!", !startStatus);
                     else if (_client.GetNameOfCurrentRunset() != string.Empty)
-                        DispalyWarningMessage("No selected Runset to Run.", !startStatus);
+                        DisplayWarningMessage("No selected Runset to Run.", !startStatus);
                     else
-                        DispalyWarningMessage("Can not start 'Runset' check for errors.", !startStatus);
+                        DisplayWarningMessage("Can not start 'Runset' check for errors.", !startStatus);
                 }
                 else
-                    DispalyWarningMessage(string.Empty, !startStatus);
+                    DisplayWarningMessage(string.Empty, !startStatus);
 
                 //Start Selected runset 
                 _client.StartSelectedRunset();
@@ -466,13 +476,13 @@ namespace RemoteAppTestClient
             bool abortStatus = _client.AbortScript();
 
             if (!abortStatus)
-                DispalyWarningMessage("Can not stop script as currently no script is running.", !abortStatus);
+                DisplayWarningMessage("Can not stop script as currently no script is running.", !abortStatus);
             else
-                DispalyWarningMessage(string.Empty, !abortStatus);
+                DisplayWarningMessage(string.Empty, !abortStatus);
         }
 
         /// <summary>
-        /// Pasues the runset based on the selected option (1: after current command, 2: after current cycle, 3: after current method)
+        /// Pauses the runset based on the selected option (1: after current command, 2: after current cycle, 3: after current method)
         /// </summary>
         private void btnPause_Click(object sender, EventArgs e)
         {
@@ -481,13 +491,13 @@ namespace RemoteAppTestClient
                 bool pauseStatus = _client.PauseRunsetAfter(comboBoxPauseAfter.SelectedIndex);
 
                 if (!pauseStatus)
-                    DispalyWarningMessage("Can not pause the script as currently no script is running.", !pauseStatus);
+                    DisplayWarningMessage("Can not pause the script as currently no script is running.", !pauseStatus);
                 else
-                    DispalyWarningMessage(string.Empty, !pauseStatus);
+                    DisplayWarningMessage(string.Empty, !pauseStatus);
             }
             else
             {
-                DispalyWarningMessage("Select an option for pause (1: after current command, 2: after current cycle, 3: after current method) in the dropdown box.", true);
+                DisplayWarningMessage("Select an option for pause (1: after current command, 2: after current cycle, 3: after current method) in the dropdown box.", true);
             }
         }
 
@@ -501,12 +511,12 @@ namespace RemoteAppTestClient
             if (!resetStatus)
             {
                 if (_client.GetOperationMode() == 20)
-                    DispalyWarningMessage("Can not 'Reset Runset', currently the runset is running.", !resetStatus);
+                    DisplayWarningMessage("Can not 'Reset Runset', currently the runset is running.", !resetStatus);
                 else
-                    DispalyWarningMessage("No 'Runset' is selected to reset.", !resetStatus);
+                    DisplayWarningMessage("No 'Runset' is selected to reset.", !resetStatus);
             }
             else
-                DispalyWarningMessage(string.Empty, !resetStatus);
+                DisplayWarningMessage(string.Empty, !resetStatus);
 
             // Reset the client 
             SetupTestClient();
@@ -557,7 +567,7 @@ namespace RemoteAppTestClient
                     mode = "Idle";
                     break;
 
-                // Paused: 	The device is idle but there is a runset selected that was paused during run and might be resumed. The ResetRunset method has to be called before a new runset can be started. Runing a maintenance command in between is possible, however.
+                // Paused: 	The device is idle but there is a runset selected that was paused during run and might be resumed. The ResetRunset method has to be called before a new runset can be started. Running a maintenance command in between is possible, however.
                 case 1:
                     mode = "Paused";
                     break;
@@ -587,7 +597,7 @@ namespace RemoteAppTestClient
                     mode = "Door Open";
                     break;
 
-                // Running: There is currently a script running. This can be either a runset or a maintencane procedure.
+                // Running: There is currently a script running. This can be either a runset or a maintenance procedure.
                 case 20:
                     mode = "Running";
                     break;
@@ -681,22 +691,45 @@ namespace RemoteAppTestClient
         {
             string status = string.Empty;
 
-            switch (_client.IsSamplePlateTrayIn())
+            if (_systemType == SystemType.MASS1)
             {
-                // state unknown
-                case -1:
-                    status = "Unknown";
-                    break;
+                switch (_client.IsSamplePlateTrayIn())
+                {
+                    // state unknown
+                    case -1:
+                        status = "Unknown";
+                        break;
 
-                // state Outside
-                case 0:
-                    status = "Outside";
-                    break;
+                    // state Outside
+                    case 0:
+                        status = "Outside";
+                        break;
 
-                // state Inside
-                case 1:
-                    status = "Inside";
-                    break;
+                    // state Inside
+                    case 1:
+                        status = "Inside";
+                        break;
+                }
+            }
+            else if (_systemType == SystemType.SPR64)
+            {
+                switch (_client.IsSideDoorOpen())
+                {
+                    // state unknown
+                    case -1:
+                        status = "Unknown";
+                        break;
+
+                    // state Closed
+                    case 0:
+                        status = "Closed";
+                        break;
+
+                    // state Open
+                    case 1:
+                        status = "Open";
+                        break;
+                }
             }
 
             if (InvokeRequired)
@@ -721,15 +754,25 @@ namespace RemoteAppTestClient
         {
             if (_client.GetNameOfCurrentRunset() != string.Empty)
             {
-                if (InvokeRequired)
-                    Invoke(new Action<string>(CurrentSamplePlateIDTextBox), new object[] { _client.GetCurrentSamplePlateId() });
+                if (string.IsNullOrEmpty(textBoxDeckLocation.Text))
+                {
+                    if (InvokeRequired)
+                        Invoke(new Action<string>(CurrentSamplePlateIDTextBox), new object[] { _client.GetCurrentSamplePlateId() });
+                    else
+                        CurrentSamplePlateIDTextBox(_client.GetCurrentSamplePlateId());
+                }
                 else
-                    CurrentSamplePlateIDTextBox(_client.GetCurrentSamplePlateId());
+                {
+                    if (InvokeRequired)
+                        Invoke(new Action<string>(CurrentSamplePlateIDTextBox), new object[] { _client.GetCurrentPlateId(textBoxDeckLocation.Text) });
+                    else
+                        CurrentSamplePlateIDTextBox(_client.GetCurrentPlateId(textBoxDeckLocation.Text));
+                }
             }
         }
 
         /// <summary>
-        /// currentsampleplate id updated in textbox
+        /// current sample plate id updated in textbox
         /// </summary>
         /// <param name="obj"></param>
         private void CurrentSamplePlateIDTextBox(string obj)
@@ -750,7 +793,7 @@ namespace RemoteAppTestClient
         /// <summary>
         /// Display local Warning
         /// </summary>
-        private void DispalyWarningMessage(string obj, bool state)
+        private void DisplayWarningMessage(string obj, bool state)
         {
             labelLocalWarningTitle.Visible = state;
             labelLocalWarrning.Visible = state;
@@ -767,7 +810,7 @@ namespace RemoteAppTestClient
             UpdateChipStatus();
         }
 
-        private void btnUpdateSampePlateStatus_Click(object sender, EventArgs e)
+        private void btnUpdateSamplePlateStatus_Click(object sender, EventArgs e)
         {
             UpdateSamplePlateStatus();
         }
@@ -785,12 +828,26 @@ namespace RemoteAppTestClient
 
         private void btnPlateOut_Click(object sender, EventArgs e)
         {
-            _client.MoveSamplePlateTrayOut();
+            if (_systemType == SystemType.MASS1)
+            {
+                _client.MoveSamplePlateTrayOut();
+            }
+            else if (_systemType == SystemType.SPR64)
+            {
+                _client.OpenSideDoor();
+            }
         }
 
         private void plateInButton_Click(object sender, EventArgs e)
         {
-            _client.MoveSamplePlateTrayIn();
+            if (_systemType == SystemType.MASS1)
+            {
+                _client.MoveSamplePlateTrayIn();
+            }
+            else if (_systemType == SystemType.SPR64)
+            {
+                _client.CloseSideDoor();
+            }
         }
     }
 }

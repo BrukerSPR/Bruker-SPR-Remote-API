@@ -18,7 +18,7 @@ public interface IBrukerSprRemoteService
     /// <summary>
     /// Returns an array containing the names of all methods of the provided assay type that are loaded in the current runset library.
     /// </summary>
-    /// <param name="assayType">the list of assay types can be obtained usinig the <see cref="GetAssayTypesOfAllMethods"/></param>
+    /// <param name="assayType">the list of assay types can be obtained using the <see cref="GetAssayTypesOfAllMethods"/></param>
     /// <returns>names of all methods of the provided assay type</returns>
     [System.ServiceModel.OperationContract()]
     [WebGet]
@@ -27,7 +27,7 @@ public interface IBrukerSprRemoteService
     /// <summary>
     /// Returns an array containing the assay types of all methods that are loaded in the current runset library.
     /// </summary>
-    /// <returns>distincted array of assay types</returns>
+    /// <returns>distinct array of assay types</returns>
     [System.ServiceModel.OperationContract()]
     [WebGet]
     string[] GetAssayTypesOfAllMethods();
@@ -73,7 +73,7 @@ public interface IBrukerSprRemoteService
     /// <summary>
     /// Returns an array containing the names of all methods of the provided assay type that are loaded in the current runset library.
     /// </summary>
-    /// <param name="assayType">the list of assay types can be obtained usinig the <see cref="GetAssayTypesOfAllRunsets"/></param>
+    /// <param name="assayType">the list of assay types can be obtained using the <see cref="GetAssayTypesOfAllRunsets"/></param>
     /// <returns>names of all runsets of the provided assay type</returns>
     [System.ServiceModel.OperationContract()]
     [WebGet]
@@ -82,7 +82,7 @@ public interface IBrukerSprRemoteService
     /// <summary>
     /// Returns an array containing the assay types of all runsets that are loaded in the current runset library.
     /// </summary>
-    /// <returns>distincted array of assay types</returns>
+    /// <returns>distinct array of assay types</returns>
     [System.ServiceModel.OperationContract()]
     [WebGet]
     string[] GetAssayTypesOfAllRunsets();
@@ -158,31 +158,83 @@ public interface IBrukerSprRemoteService
     bool CreateRunset(string[] methodNames);
 
     /// <summary>
-    /// Assigns an id to the exchangable plate of the method with the specified index in the currently selected runset. 
+    /// Assigns an id to the exchangeable plate of the method with the specified index in the currently selected runset. 
     /// Returns 'false' if method index is out of range or the method with the given index doesn't use a sample plate. Check for errors in this case.
+    /// This is only implemented for MASS-1 platform and will throw a <see cref="System.NotSupportedException"/> on SPR #64.
     /// </summary>
     /// <param name="methodIndex">index of the method in the runset for which the plate ID is assigned</param>
     /// <param name="plateId">ID of the plate</param>
     /// <returns>success status</returns>
-    [System.ServiceModel.OperationContract()]
-    [WebInvoke(BodyStyle = WebMessageBodyStyle.Wrapped)]
+    /// <exception cref="System.NotSupportedException">Thrown if not MASS-1 platform.</exception>
+    [OperationContract]
+    [WebInvoke(Method = "GET", UriTemplate = "SetSamplePlateId?methodIndex={methodIndex}&plateId={plateId}", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
     bool SetSamplePlateId(int methodIndex, string plateId);
 
     /// <summary>
     /// Gets the ID of the sample plate of the method with the given index in the current runset. 
     /// Returns an empty string if the index is out of range, if there is no runset, no plate, or the plate doesn't have an ID assigned.
+    /// This is only implemented for MASS-1 platform and will throw a <see cref="System.NotSupportedException"/> on SPR #64.
     /// </summary>
     /// <param name="methodIndex">index of the method in the current runset</param>
     /// <returns>ID of the sample plate</returns>
+    /// <exception cref="System.NotSupportedException">Thrown if not MASS-1 platform.</exception>
     [OperationContract]
-    [WebGet]
+    [WebGet(ResponseFormat = WebMessageFormat.Json)]
     string GetSamplePlateId(int methodIndex);
+
+    /// <summary>
+    /// Gets the ID of the sample plate that is currently inside the machine. Gets the ID of the current sample plate. Returns an empty string if there is no plate or ID is unknown.
+    /// This is only implemented for MASS-1 platform and will throw a <see cref="System.NotSupportedException"/> on SPR #64.
+    /// </summary>
+    /// <returns>ID of the sample plate inside the machine</returns>
+    /// <exception cref="System.NotSupportedException">Thrown if not MASS-1 platform.</exception>
+    [OperationContract]
+    [WebGet(ResponseFormat = WebMessageFormat.Json)]
+    string GetCurrentSamplePlateId();
+
+    /// <summary>
+    /// Assigns an id to the plate at the provided deck location of the method with the specified index in the currently selected runset. 
+    /// Returns 'false' if method index is out of range or the method with the given index doesn't use a sample plate. Check for errors in this case.
+    /// </summary>
+    /// <param name="methodIndex">index of the method in the runset for which the plate ID is assigned</param>
+    /// <param name="deckLocation">name of the deck location where the plate is located</param>
+    /// <param name="plateId">ID of the plate</param>
+    /// <returns>success status</returns>
+    /// <exception cref="System.ArgumentException">Thrown if location does not exist on deck.</exception>
+    [OperationContract]
+    [WebInvoke(Method = "GET", UriTemplate = "SetSamplePlateId?methodIndex={methodIndex}&plateId={plateId}", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+    bool SetPlateId(int methodIndex, string deckLocation, string plateId);
+
+    /// <summary>
+    /// Gets the ID of the plate at the provided deck location of the method with the given index in the current runset. 
+    /// Returns an empty string if the index is out of range, if there is no runset, no plate, or the plate doesn't have an ID assigned.
+    /// </summary>
+    /// <param name="methodIndex">index of the method in the current runset</param>
+    /// <param name="deckLocation">name of the deck location where the plate is located</param>
+    /// <returns>ID of the plate</returns>
+    /// <exception cref="System.ArgumentException">Thrown if location does not exist on deck.</exception>
+    [OperationContract]
+    [WebGet(ResponseFormat = WebMessageFormat.Json)]
+    string GetPlateId(int methodIndex, string deckLocation);
+
+    /// <summary>
+    /// Gets the ID of the plate that is currently inside the machine at the provided deck location. Returns an empty string if there is no plate or ID is unknown.
+    /// This is only implemented for MASS-1 platform and will throw a <see cref="System.NotSupportedException"/> on SPR #64.
+    /// </summary>
+    /// <param name="deckLocation">name of the deck location where the plate is located</param>
+    /// <returns>ID of the plate</returns>
+    /// <exception cref="System.ArgumentException">Thrown if location does not exist on deck.</exception>
+    [OperationContract]
+    [WebGet(ResponseFormat = WebMessageFormat.Json)]
+    string GetCurrentPlateId(string deckLocation);
 
     /// <summary>
     /// Moves the sample plate tray out of the device so the plate mover can get or put a plate from it. Returns 'false' if this is not possible. 
     /// This might be the case if there is a runset or maintenance procedure currently running or if a reset is required. Check for errors in this case.
+    /// This is only implemented for MASS-1 platform and will throw a <see cref="System.NotSupportedException"/> on SPR #64.
     /// </summary>
     /// <returns>success status</returns>
+    /// <exception cref="System.NotSupportedException">Thrown if not MASS-1 platform.</exception>
     [System.ServiceModel.OperationContract()]
     [WebGet]
     bool MoveSamplePlateTrayOut();
@@ -190,11 +242,33 @@ public interface IBrukerSprRemoteService
     /// <summary>
     /// Moves the sample plate tray into the housing. Returns 'false' if this is not possible. 
     /// This might be the case if there is a runset or maintenance procedure is currently running or if a reset is required. Check for errors in this case.
+    /// This is only implemented for MASS-1 platform and will throw a <see cref="System.NotSupportedException"/> on SPR #64.
     /// </summary>
     /// <returns>success status</returns>
+    /// <exception cref="System.NotSupportedException">Thrown if not MASS-1 platform.</exception>
     [System.ServiceModel.OperationContract()]
     [WebGet]
     bool MoveSamplePlateTrayIn();
+
+    /// <summary>
+    /// Opens the side door so that a plate mover can exchange a plate on the plate deck.
+    /// This is only implemented for SPR #64 and will throw a <see cref="System.NotSupportedException"/> on MASS-1 platform.
+    /// </summary>
+    /// <returns>success status</returns>
+    /// <exception cref="System.NotSupportedException">Thrown if not SPR #64.</exception>
+    [OperationContract]
+    [WebGet(ResponseFormat = WebMessageFormat.Json)]
+    bool OpenSideDoor();
+
+    /// <summary>
+    /// Closes the side door after a plate mover has exchanged a plate on the plate deck.
+    /// This is only implemented for SPR #64 and will throw a <see cref="System.NotSupportedException"/> on MASS-1 platform.
+    /// </summary>
+    /// <returns>success status</returns>
+    /// <exception cref="System.NotSupportedException">Thrown if not SPR #64.</exception>
+    [OperationContract]
+    [WebGet(ResponseFormat = WebMessageFormat.Json)]
+    bool CloseSideDoor();
 
     /// <summary>
     /// Starts the currently selected runset. Returns 'false' if this is not possible. Check for errors in this case. 
@@ -226,7 +300,7 @@ public interface IBrukerSprRemoteService
 
     /// <summary>
     /// Resumes the paused runset where it was paused. Returns false if this is not possible. Check for errors in this case. 
-    /// Reasons might be that the operation mode is different from 'paused' or deivce is not ready or on error.
+    /// Reasons might be that the operation mode is different from 'paused' or device is not ready or on error.
     /// </summary>
     /// <returns>success status</returns>
     [System.ServiceModel.OperationContract()]
@@ -306,19 +380,25 @@ public interface IBrukerSprRemoteService
 
     /// <summary>
     /// Checks whether the sample plate tray is driven into the device.
+    /// This is only implemented for MASS-1 platform and will throw a
+    /// <see cref="System.NotSupportedException"/> on SPR #64.
     /// </summary>
-    /// <returns>1 = try in, 0 = tray out, -1 = unknown</returns>
+    /// <returns>1 = tray in, 0 = tray out, -1 = unknown</returns>
+    /// <exception cref="System.NotSupportedException">Thrown if not MASS-1 platform.</exception>
     [System.ServiceModel.OperationContract()]
     [WebGet]
     int IsSamplePlateTrayIn();
 
     /// <summary>
-    /// Gets the ID of the sample plate that is currently inside the machine. Gets the ID of the current sample plate. Returns an empty string if there is no plate or ID is unknown. 
+    /// Checks whether the side door is open.
+    /// This is only implemented for SPR #64 and will throw a
+    /// <see cref="System.NotSupportedException"/> on MASS-1 platform.
     /// </summary>
-    /// <returns>ID of the sample plate inside the machine</returns>
-    [System.ServiceModel.OperationContract()]
-    [WebGet]
-    string GetCurrentSamplePlateId();
+    /// <returns>1 = open, 0 = closed, -1 = unknown</returns>
+    /// <exception cref="System.NotSupportedException">Thrown if not SPR #64.</exception>
+    [OperationContract]
+    [WebGet(ResponseFormat = WebMessageFormat.Json)]
+    int IsSideDoorOpen();
 
     /// <summary>
     /// Checks whether the server's message loop contains at least one new message.
@@ -476,6 +556,26 @@ public partial class MASS1RemoteServiceClient : System.ServiceModel.ClientBase<I
         return Channel.GetSamplePlateId(methodIndex);
     }
 
+    public string GetCurrentSamplePlateId()
+    {
+        return Channel.GetCurrentSamplePlateId();
+    }
+
+    public bool SetPlateId(int methodIndex, string deckLocation, string plateId)
+    {
+        return Channel.SetPlateId(methodIndex, deckLocation, plateId);
+    }
+
+    public string GetPlateId(int methodIndex, string deckLocation)
+    {
+        return Channel.GetPlateId(methodIndex, deckLocation);
+    }
+
+    public string GetCurrentPlateId(string deckLocation)
+    {
+        return Channel.GetCurrentPlateId(deckLocation);
+    }
+
     public bool MoveSamplePlateTrayOut()
     {
         return Channel.MoveSamplePlateTrayOut();
@@ -484,6 +584,16 @@ public partial class MASS1RemoteServiceClient : System.ServiceModel.ClientBase<I
     public bool MoveSamplePlateTrayIn()
     {
         return Channel.MoveSamplePlateTrayIn();
+    }
+
+    public bool OpenSideDoor()
+    {
+        return Channel.OpenSideDoor();
+    }
+
+    public bool CloseSideDoor()
+    {
+        return Channel.CloseSideDoor();
     }
 
     public bool StartSelectedRunset()
@@ -551,9 +661,9 @@ public partial class MASS1RemoteServiceClient : System.ServiceModel.ClientBase<I
         return Channel.IsSamplePlateTrayIn();
     }
 
-    public string GetCurrentSamplePlateId()
+    public int IsSideDoorOpen()
     {
-        return Channel.GetCurrentSamplePlateId();
+        return Channel.IsSideDoorOpen();
     }
 
     public bool HasMessage()
