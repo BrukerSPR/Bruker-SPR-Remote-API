@@ -56,6 +56,7 @@ namespace RemoteAppTestClient
 
                 tabControl.Enabled = true;
 
+                GetDeckLocationNames();
                 GetMethodsAndRunsets();
                 SetupTestClient();
 
@@ -97,10 +98,14 @@ namespace RemoteAppTestClient
             }
         }
 
-        /// <summary>
-        /// Gets the names of the methods and runsets
-        /// </summary>
-        public void GetMethodsAndRunsets()
+        private void GetDeckLocationNames()
+        {
+            comboBoxDeckLocations.Items.Clear();
+            comboBoxDeckLocations.Items.AddRange(_client.GetDeckLocations());
+            comboBoxDeckLocations.SelectedIndex = 0;
+        }
+
+        private void GetMethodsAndRunsets()
         {
             _methodTypes = _client.GetAssayTypesOfAllMethods();
             _runsetTypes = _client.GetAssayTypesOfAllRunsets();
@@ -109,10 +114,7 @@ namespace RemoteAppTestClient
             _maintenanceCommands = _client.GetNamesOfMaintenanceProcedures();
         }
 
-        /// <summary>
-        /// After the client is connected we setup the test client with the list of methods and runsets from the server
-        /// </summary>
-        public void SetupTestClient()
+        private void SetupTestClient()
         {
             comboBoxTypes.SelectedIndex = -1;
             comboBoxTypes.Items.Clear();
@@ -156,9 +158,6 @@ namespace RemoteAppTestClient
             SetViewState();
         }
 
-        /// <summary>
-        /// Sets the state of the view
-        /// </summary>
         private void SetViewState()
         {
             comboBoxMaintenance.Enabled = checkBoxrunMaintenanceCmd.Checked;
@@ -175,32 +174,27 @@ namespace RemoteAppTestClient
 
         #endregion
 
-
         #region Polling
 
         private CancellationTokenSource _cts;
 
-        public void StartExecution()
+        private void StartExecution()
         {
             Task.Factory.StartNew(OwnCodeCancelableTask_EveryNSeconds, _cts.Token);
         }
 
-        public void CancelExecution()
+        private void CancelExecution()
         {
             _cts.Cancel();
         }
 
-        /// <summary>
-        /// "Infinite" loop that runs every N seconds. Good for checking for a heartbeat or updates.
-        /// </summary>
-        /// <param name="taskState">The cancellation token from our _cts field, passed in the StartNew call</param>
         private void OwnCodeCancelableTask_EveryNSeconds(object taskState)
         {
             var token = (CancellationToken)taskState;
 
             while (!token.IsCancellationRequested)
             {
-                if(checkboxPolling.Checked)
+                if (checkboxPolling.Checked)
                     StatusCheck();
 
                 Thread.Sleep(2000);
@@ -209,16 +203,16 @@ namespace RemoteAppTestClient
 
         #endregion
 
-
         #region Methods - Get Information About Methods or Runsets
 
-        /// <summary>
-        /// Updates the selected runset information
-        /// </summary>
         private void UpdateInfoSelectedRunset()
         {
             selectedRunsetListBox.Items.Clear();
-            selectedRunsetListBox.Items.AddRange(_client.GetMethodNamesOfRunset(_client.GetNameOfCurrentRunset()));
+
+            string currentRunsetName = _client.GetNameOfCurrentRunset();
+            string currentMethodName = _client.GetNameOfCurrentMethod();
+
+            selectedRunsetListBox.Items.AddRange(_client.GetMethodNamesOfRunset(currentRunsetName));
 
             if (selectedRunsetListBox.Items.Count > 0)
                 selectedRunsetListBox.SelectedItem = selectedRunsetListBox.Items[0];
@@ -228,17 +222,29 @@ namespace RemoteAppTestClient
             comboBoxRunsets.Enabled = false;
 
             if (InvokeRequired)
-                Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { _client.GetNameOfCurrentRunset(), _client.GetAssayTypeOfRunset(_client.GetNameOfCurrentRunset()),
-                _client.GetNameOfCurrentMethod(),_client.GetAssayTypeOfMethod(_client.GetNameOfCurrentMethod()), _client.GetSamplePlateId(selectedRunsetListBox.SelectedIndex)  });
+            {
+                if (_systemType == SystemType.MASS1)
+                {
+                    Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { currentRunsetName, _client.GetAssayTypeOfRunset(currentRunsetName),
+                        currentMethodName, _client.GetAssayTypeOfMethod(currentMethodName), _client.GetSamplePlateId(selectedRunsetListBox.SelectedIndex) });
+                }
+                else if (_systemType == SystemType.SPR64)
+                {
+                    string deckLocation = string.IsNullOrWhiteSpace(comboBoxDeckLocations.Text) ? "P4" : comboBoxDeckLocations.Text;
+
+                    Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { currentRunsetName, _client.GetAssayTypeOfRunset(currentRunsetName),
+                        currentMethodName, _client.GetAssayTypeOfMethod(currentMethodName), _client.GetPlateId(selectedRunsetListBox.SelectedIndex, deckLocation) });
+                }
+            }
         }
 
-        /// <summary>
-        /// Updates the selected method information when ran as an individual method
-        /// </summary>
         private void UpdateInfoSelectedMethod()
         {
             selectedRunsetListBox.Items.Clear();
-            selectedRunsetListBox.Items.Add(_client.GetNameOfCurrentMethod());
+
+            string currentMethodName = _client.GetNameOfCurrentMethod();
+
+            selectedRunsetListBox.Items.Add(currentMethodName);
 
             if (selectedRunsetListBox.Items.Count > 0)
                 selectedRunsetListBox.SelectedItem = selectedRunsetListBox.Items[0];
@@ -248,12 +254,20 @@ namespace RemoteAppTestClient
             comboBoxRunsets.Enabled = false;
 
             if (InvokeRequired)
-                Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { "", "", _client.GetNameOfCurrentMethod(), _client.GetAssayTypeOfMethod(_client.GetNameOfCurrentMethod()), _client.GetSamplePlateId(0) });
+            {
+                if (_systemType == SystemType.MASS1)
+                {
+                    Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { "", "", currentMethodName, _client.GetAssayTypeOfMethod(currentMethodName), _client.GetSamplePlateId(0) });
+                }
+                else if (_systemType == SystemType.SPR64)
+                {
+                    string deckLocation = string.IsNullOrWhiteSpace(comboBoxDeckLocations.Text) ? "P4" : comboBoxDeckLocations.Text;
+
+                    Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { "", "", currentMethodName, _client.GetAssayTypeOfMethod(currentMethodName), _client.GetPlateId(0, deckLocation) });
+                }
+            }
         }
 
-        /// <summary>
-        /// Sets the selected item info
-        /// </summary>
         private void SetSelectedItems(string sr, string srt, string sm, string smt, string spid)
         {
             textBoxRunsets.Text = sr;
@@ -267,17 +281,14 @@ namespace RemoteAppTestClient
             textBoxSetSamplePlateID.Text = spid;
         }
 
-        /// <summary>
-        /// Set the sample plate id on click
-        /// </summary>
         private void buttonPlateID_Click(object sender, EventArgs e)
         {
             buttonPlateID.Enabled = false;
             buttonPlateID.Visible = false;
 
-            bool setPlateID = string.IsNullOrEmpty(textBoxDeckLocation.Text) ?
-                _client.SetSamplePlateId(selectedRunsetListBox.SelectedIndex, textBoxSetSamplePlateID.Text) :
-                _client.SetPlateId(selectedRunsetListBox.SelectedIndex, textBoxDeckLocation.Text, textBoxSetSamplePlateID.Text);
+            bool setPlateID = !string.IsNullOrWhiteSpace(comboBoxDeckLocations.Text) || _systemType == SystemType.SPR64 ?
+                _client.SetPlateId(selectedRunsetListBox.SelectedIndex, textBoxSetSamplePlateID.Text, comboBoxDeckLocations.Text) :
+                _client.SetSamplePlateId(selectedRunsetListBox.SelectedIndex, textBoxSetSamplePlateID.Text);
 
             if (!setPlateID)
             {
@@ -290,39 +301,35 @@ namespace RemoteAppTestClient
                 DisplayWarningMessage(string.Empty, !setPlateID);
         }
 
-        /// <summary>
-        /// Enable edit sample plate Id
-        /// </summary>
         private void textBoxSetSamplePlateID_TextChanged(object sender, EventArgs e)
         {
             buttonPlateID.Visible = true;
             buttonPlateID.Enabled = true;
         }
 
-        /// <summary>
-        /// Update the Info
-        /// </summary>
         private void selectedRunsetListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             textBoxSetSamplePlateID.Enabled = true;
+            comboBoxDeckLocations.Enabled = true;
+
+            string currentRunsetName = _client.GetNameOfCurrentRunset();
+            string assayTypeMRunset = _client.GetAssayTypeOfRunset(currentRunsetName);
+            string currentMethodName = _client.GetNameOfCurrentMethod();
+            string assayTypeMethod = _client.GetAssayTypeOfMethod(currentMethodName);
+            string plateId = !string.IsNullOrWhiteSpace(comboBoxDeckLocations.Text) || _systemType == SystemType.SPR64 ?
+                _client.GetPlateId(selectedRunsetListBox.SelectedIndex, comboBoxDeckLocations.Text) :
+                _client.GetSamplePlateId(selectedRunsetListBox.SelectedIndex);
 
             if (InvokeRequired)
-                Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { _client.GetNameOfCurrentRunset(), _client.GetAssayTypeOfRunset(_client.GetNameOfCurrentRunset()) ,
-                selectedRunsetListBox.Items.ToString(),_client.GetAssayTypeOfMethod(selectedRunsetListBox.Items.ToString()), _client.GetSamplePlateId(selectedRunsetListBox.SelectedIndex) });
+                Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { currentRunsetName, assayTypeMRunset, currentMethodName, assayTypeMethod, plateId });
             else
-                SetSelectedItems(_client.GetNameOfCurrentRunset(), _client.GetAssayTypeOfRunset(_client.GetNameOfCurrentRunset()),
-                _client.GetNameOfCurrentMethod(), _client.GetAssayTypeOfMethod(selectedRunsetListBox.Items.ToString()), _client.GetSamplePlateId(selectedRunsetListBox.SelectedIndex));
+                SetSelectedItems(currentRunsetName, assayTypeMRunset, currentMethodName, assayTypeMethod, plateId);              
         }
 
         #endregion
 
-
         #region Methods 
 
-
-        /// <summary>
-        /// offers the option to filter methods and runsets by type
-        /// </summary>
         private void comboBoxTypes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBoxTypes.SelectedIndex > -1)
@@ -344,35 +351,16 @@ namespace RemoteAppTestClient
             }
         }
 
-        /// <summary>
-        /// Sets the selected method and creates a runset using the selected method
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void comboBoxMethods_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBoxMethods.SelectedIndex > -1)
             {
-
                 bool selectMethod = _client.SelectMethod(comboBoxMethods.SelectedItem.ToString());
 
                 if (!selectMethod)
                     DisplayWarningMessage("Can not create runset. Check Operation Mode!", !selectMethod);
                 else
                     DisplayWarningMessage(string.Empty, !selectMethod);
-
-                //string[] selectedMethod = new string[1] { comboBoxMethods.SelectedItem.ToString() };
-                //bool createRunsetStatus = _client.CreateRunset(selectedMethod);
-
-                //if (!createRunsetStatus)
-                //{
-                //    if(!_methodNames.Contains(comboBoxMethods.SelectedItem.ToString()))
-                //        DisplayWarningMessage("Can not create runset. Selected method does not exist in library", !createRunsetStatus);
-                //    else
-                //        DisplayWarningMessage("Can not create runset. Check Operation Mode!", !createRunsetStatus);
-                //}
-                //else
-                //    DisplayWarningMessage(string.Empty, !createRunsetStatus);
 
                 UpdateInfoSelectedMethod();
             }
@@ -468,9 +456,6 @@ namespace RemoteAppTestClient
             }
         }
 
-        /// <summary>
-        /// Stops and aborts the current running script
-        /// </summary>
         private void btnStop_Click(object sender, EventArgs e)
         {
             bool abortStatus = _client.AbortScript();
@@ -481,9 +466,6 @@ namespace RemoteAppTestClient
                 DisplayWarningMessage(string.Empty, !abortStatus);
         }
 
-        /// <summary>
-        /// Pauses the runset based on the selected option (1: after current command, 2: after current cycle, 3: after current method)
-        /// </summary>
         private void btnPause_Click(object sender, EventArgs e)
         {
             if (comboBoxPauseAfter.SelectedIndex >= 0)
@@ -501,9 +483,6 @@ namespace RemoteAppTestClient
             }
         }
 
-        /// <summary>
-        /// Reset the Runset
-        /// </summary>
         private void btnReset_Click(object sender, EventArgs e)
         {
             bool resetStatus = _client.ResetRunset();
@@ -524,12 +503,8 @@ namespace RemoteAppTestClient
 
         #endregion
 
-
         #region Status
 
-        /// <summary>
-        /// Checks the status of the Machine 
-        /// </summary>
         private void StatusCheck()
         {
             if (this.InvokeRequired)
@@ -553,9 +528,6 @@ namespace RemoteAppTestClient
             }
         }
 
-        /// <summary>
-        /// Updates the Operation Mode
-        /// </summary>
         private void UpdateOperationMode()
         {
             string mode = string.Empty;
@@ -609,18 +581,11 @@ namespace RemoteAppTestClient
                 ChangeOperationTextBox(mode);
         }
 
-        /// <summary>
-        /// Operation Mode text changed
-        /// </summary>
         private void ChangeOperationTextBox(string obj)
         {
             operationTextBox.Text = obj;
         }
 
-
-        /// <summary>
-        /// Updates the error and messages
-        /// </summary>
         private void UpdateErrors()
         {
             lblError.Visible = true;
@@ -636,18 +601,11 @@ namespace RemoteAppTestClient
             }
         }
 
-        /// <summary>
-        /// Error Box Text Changes
-        /// </summary>
         private void ChangeErrorTextBox(string obj)
         {
             ErrorTextBox.Text = obj;
         }
 
-
-        /// <summary>
-        /// Updates the status of the chip
-        /// </summary>
         private void UpdateChipStatus()
         {
             string status = string.Empty;
@@ -676,17 +634,11 @@ namespace RemoteAppTestClient
                 ChangeChipStatusTextBox(status);
         }
 
-        /// <summary>
-        /// Chip Status box Text changed
-        /// </summary>
         private void ChangeChipStatusTextBox(string obj)
         {
             chipStatusTextBox.Text = obj;
         }
 
-        /// <summary>
-        /// Updates the status of the sample plate
-        /// </summary>
         private void UpdateSamplePlateStatus()
         {
             string status = string.Empty;
@@ -738,48 +690,30 @@ namespace RemoteAppTestClient
                 SamplePlateStatusTextBox(status);
         }
 
-        /// <summary>
-        /// Sample Plate Box Text Changed
-        /// </summary>
         private void SamplePlateStatusTextBox(string obj)
         {
             samplePlateStatTextBox.Text = obj;
         }
 
-
-        /// <summary>
-        /// Updates the ID of the sample plate
-        /// </summary>
         private void UpdateSamplePlateID()
         {
             if (_client.GetNameOfCurrentRunset() != string.Empty)
             {
-                if (string.IsNullOrEmpty(textBoxDeckLocation.Text))
-                {
-                    if (InvokeRequired)
-                        Invoke(new Action<string>(CurrentSamplePlateIDTextBox), new object[] { _client.GetCurrentSamplePlateId() });
-                    else
-                        CurrentSamplePlateIDTextBox(_client.GetCurrentSamplePlateId());
-                }
+                string plateId = !string.IsNullOrWhiteSpace(comboBoxDeckLocations.Text) || _systemType == SystemType.SPR64 ?
+                    _client.GetCurrentPlateId(comboBoxDeckLocations.Text) :
+                    _client.GetCurrentSamplePlateId();
+
+                if (InvokeRequired)
+                    Invoke(new Action<string>(CurrentSamplePlateIDTextBox), new object[] { plateId });
                 else
-                {
-                    if (InvokeRequired)
-                        Invoke(new Action<string>(CurrentSamplePlateIDTextBox), new object[] { _client.GetCurrentPlateId(textBoxDeckLocation.Text) });
-                    else
-                        CurrentSamplePlateIDTextBox(_client.GetCurrentPlateId(textBoxDeckLocation.Text));
-                }
+                    CurrentSamplePlateIDTextBox(plateId);
             }
         }
 
-        /// <summary>
-        /// current sample plate id updated in textbox
-        /// </summary>
-        /// <param name="obj"></param>
         private void CurrentSamplePlateIDTextBox(string obj)
         {
             samplePlateIDTextBox.Text = obj;
         }
-
 
         private void checkboxPolling_CheckedChanged(object sender, EventArgs e)
         {
@@ -790,9 +724,6 @@ namespace RemoteAppTestClient
             btnUpdateError.Enabled = btnUpdateError.Visible = !checkboxPolling.Checked;
         }
 
-        /// <summary>
-        /// Display local Warning
-        /// </summary>
         private void DisplayWarningMessage(string obj, bool state)
         {
             labelLocalWarningTitle.Visible = state;
@@ -824,7 +755,6 @@ namespace RemoteAppTestClient
         {
             UpdateErrors();
         }
-        #endregion
 
         private void btnPlateOut_Click(object sender, EventArgs e)
         {
@@ -849,5 +779,7 @@ namespace RemoteAppTestClient
                 _client.CloseSideDoor();
             }
         }
+
+        #endregion
     }
 }

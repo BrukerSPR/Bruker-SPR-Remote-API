@@ -202,8 +202,8 @@ public interface IBrukerSprRemoteService
     /// <returns>success status</returns>
     /// <exception cref="System.ArgumentException">Thrown if location does not exist on deck.</exception>
     [OperationContract]
-    [WebInvoke(Method = "GET", UriTemplate = "SetSamplePlateId?methodIndex={methodIndex}&plateId={plateId}", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-    bool SetPlateId(int methodIndex, string deckLocation, string plateId);
+    [WebInvoke(Method = "GET", UriTemplate = "SetPlateId?methodIndex={methodIndex}&plateId={plateId}&deckLocation={deckLocation}", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+    bool SetPlateId(int methodIndex, string plateId, string deckLocation);
 
     /// <summary>
     /// Gets the ID of the plate at the provided deck location of the method with the given index in the current runset. 
@@ -227,6 +227,14 @@ public interface IBrukerSprRemoteService
     [OperationContract]
     [WebGet(ResponseFormat = WebMessageFormat.Json)]
     string GetCurrentPlateId(string deckLocation);
+
+    /// <summary>
+    /// Returns an array of all deck location names.
+    /// </summary>
+    /// <returns>names of all deck locations.</returns>
+    [OperationContract]
+    [WebGet(ResponseFormat = WebMessageFormat.Json)]
+    string[] GetDeckLocations();
 
     /// <summary>
     /// Moves the sample plate tray out of the device so the plate mover can get or put a plate from it. Returns 'false' if this is not possible. 
@@ -561,9 +569,9 @@ public partial class MASS1RemoteServiceClient : System.ServiceModel.ClientBase<I
         return Channel.GetCurrentSamplePlateId();
     }
 
-    public bool SetPlateId(int methodIndex, string deckLocation, string plateId)
+    public bool SetPlateId(int methodIndex, string plateId, string deckLocation)
     {
-        return Channel.SetPlateId(methodIndex, deckLocation, plateId);
+        return Channel.SetPlateId(methodIndex, plateId, deckLocation);
     }
 
     public string GetPlateId(int methodIndex, string deckLocation)
@@ -574,6 +582,11 @@ public partial class MASS1RemoteServiceClient : System.ServiceModel.ClientBase<I
     public string GetCurrentPlateId(string deckLocation)
     {
         return Channel.GetCurrentPlateId(deckLocation);
+    }
+
+    public string[] GetDeckLocations()
+    {
+        return Channel.GetDeckLocations();
     }
 
     public bool MoveSamplePlateTrayOut()

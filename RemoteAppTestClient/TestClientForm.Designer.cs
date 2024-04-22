@@ -54,7 +54,6 @@
             this.lblMaintenance = new System.Windows.Forms.Label();
             this.groupBoxRunset = new System.Windows.Forms.GroupBox();
             this.labelPlateLocation = new System.Windows.Forms.Label();
-            this.textBoxDeckLocation = new System.Windows.Forms.TextBox();
             this.buttonPlateID = new System.Windows.Forms.Button();
             this.lblCurrentRunset = new System.Windows.Forms.Label();
             this.lblCurrentRunsetType = new System.Windows.Forms.Label();
@@ -90,6 +89,7 @@
             this.btnStop = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
+            this.comboBoxDeckLocations = new System.Windows.Forms.ComboBox();
             this.tabLog.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logGridView)).BeginInit();
             this.tabOperation.SuspendLayout();
@@ -362,8 +362,8 @@
             // 
             // groupBoxRunset
             // 
+            this.groupBoxRunset.Controls.Add(this.comboBoxDeckLocations);
             this.groupBoxRunset.Controls.Add(this.labelPlateLocation);
-            this.groupBoxRunset.Controls.Add(this.textBoxDeckLocation);
             this.groupBoxRunset.Controls.Add(this.buttonPlateID);
             this.groupBoxRunset.Controls.Add(this.lblCurrentRunset);
             this.groupBoxRunset.Controls.Add(this.lblCurrentRunsetType);
@@ -392,14 +392,6 @@
             this.labelPlateLocation.Size = new System.Drawing.Size(81, 13);
             this.labelPlateLocation.TabIndex = 51;
             this.labelPlateLocation.Text = "Plate Location";
-            // 
-            // textBoxDeckLocation
-            // 
-            this.textBoxDeckLocation.Enabled = false;
-            this.textBoxDeckLocation.Location = new System.Drawing.Point(126, 386);
-            this.textBoxDeckLocation.Name = "textBoxDeckLocation";
-            this.textBoxDeckLocation.Size = new System.Drawing.Size(102, 20);
-            this.textBoxDeckLocation.TabIndex = 50;
             // 
             // buttonPlateID
             // 
@@ -793,6 +785,14 @@
             this.tabControl.Size = new System.Drawing.Size(875, 590);
             this.tabControl.TabIndex = 0;
             // 
+            // comboBoxDeckLocations
+            // 
+            this.comboBoxDeckLocations.FormattingEnabled = true;
+            this.comboBoxDeckLocations.Location = new System.Drawing.Point(126, 386);
+            this.comboBoxDeckLocations.Name = "comboBoxDeckLocations";
+            this.comboBoxDeckLocations.Size = new System.Drawing.Size(102, 21);
+            this.comboBoxDeckLocations.TabIndex = 52;
+            // 
             // TestClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -803,6 +803,7 @@
             this.Controls.Add(this.tabControl);
             this.MinimumSize = new System.Drawing.Size(915, 690);
             this.Name = "TestClientForm";
+            this.ShowIcon = false;
             this.Text = "Remote Test Client";
             this.tabLog.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.logGridView)).EndInit();
@@ -880,7 +881,7 @@
         private System.Windows.Forms.Button btnPlateInOrDoorClose;
         private System.Windows.Forms.Button btnPlateOutOrDoorOpen;
         private System.Windows.Forms.Label labelPlateLocation;
-        private System.Windows.Forms.TextBox textBoxDeckLocation;
+        private System.Windows.Forms.ComboBox comboBoxDeckLocations;
     }
 }
 
