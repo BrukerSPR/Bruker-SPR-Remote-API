@@ -10,3 +10,4 @@ bld/
 [Oo]bj/
 *.vcxproj.user
 *.csproj.user
+/RemoteAppTestClient/.vs
