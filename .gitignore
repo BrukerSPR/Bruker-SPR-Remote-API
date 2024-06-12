@@ -11,3 +11,4 @@ bld/
 *.vcxproj.user
 *.csproj.user
 /RemoteAppTestClient/.vs
+*.orig
