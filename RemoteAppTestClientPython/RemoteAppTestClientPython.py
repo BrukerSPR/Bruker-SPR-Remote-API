@@ -1,9 +1,11 @@
 import Mass1Api
 import Tools
 
-  
-# create connection to API
-api = Mass1Api.Mass1Api('http://10.56.0.42:9001/bruker-spr/json/')
+# replace localhost with the IP of the PC the control software is running on
+address = 'http://localhost:9001/bruker-spr/json/'
+
+# create connection to API 
+api = Mass1Api.Mass1Api(address)
 
 # create tools object to provide some helper methods
 toolbox = Tools.Tools(api)
