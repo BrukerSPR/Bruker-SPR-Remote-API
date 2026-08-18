@@ -100,8 +100,8 @@ class Mass1Api:
     def LeaveStandby(self) :
         return self.CallApi('LeaveStandby')
 
-    def SetStandbyAfterFinish(self, methodName) :
-        return self.CallApi('SetStandbyAfterFinish?runsetName=' + str(methodName).replace(" ", "%20"))
+    def SetStandbyAfterFinish(self, goToStandby) :
+        return self.CallApi('SetStandbyAfterFinish?goToStandby=' + str(goToStandby))
 
     def GetStandbyAfterFinish(self) :
         return self.CallApi('GetStandbyAfterFinish')
