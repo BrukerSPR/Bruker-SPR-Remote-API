@@ -43,19 +43,58 @@
       });
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', relocateFootnotes);
-    } else {
+    function formatAndSortEnumTables() {
+      document.querySelectorAll('.enum-table').forEach(table => {
+        const tbody = table.querySelector('tbody');
+        if (!tbody) return;
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        rows.forEach(row => {
+          const raw = row.getAttribute('data-raw-syntax') || '';
+          const nameAttr = row.getAttribute('data-name') || '';
+          const match = raw.match(/^(?:.*?\.)?([A-Za-z0-9_]+)\s*=\s*(-?\d+)/);
+          let name = nameAttr;
+          let val = null;
+          if (match) {
+            name = match[1];
+            val = parseInt(match[2], 10);
+          } else {
+            const numMatch = raw.match(/-?\d+/);
+            if (numMatch) val = parseInt(numMatch[0], 10);
+          }
+
+          if (val !== null) {
+            row.setAttribute('data-enum-val', val);
+            const valCell = row.querySelector('.enum-value');
+            if (valCell) valCell.innerHTML = '<code>' + val + '</code>';
+          }
+          if (name) {
+            const nameCell = row.querySelector('.enum-name');
+            if (nameCell) nameCell.innerHTML = '<code>' + name + '</code>';
+          }
+        });
+
+        rows.sort((a, b) => {
+          const valA = parseInt(a.getAttribute('data-enum-val') || '0', 10);
+          const valB = parseInt(b.getAttribute('data-enum-val') || '0', 10);
+          return valA - valB;
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+      });
+    }
+
+    function init() {
       relocateFootnotes();
+      formatAndSortEnumTables();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
     }
   })();
 </script>
-
-{{#syntax.content.0.value}}
-<div class="codewrapper">
-  <pre><code class="lang-csharp hljs">{{syntax.content.0.value}}</code></pre>
-</div>
-{{/syntax.content.0.value}}
 
 {{#syntax.parameters.0}}
 <h4 class="section">{{__global.parameters}}</h4>
@@ -195,14 +234,24 @@
 
 {{#isEnum}}
 {{#children}}
-<h2 id="{{id}}">{{>partials/classSubtitle}}</h2>
-<dl class="parameters">
+<table class="table table-bordered table-condensed enum-table">
+  <thead>
+    <tr>
+      <th>Value</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
 {{#children}}
-  <dt id="{{id}}"><code>{{syntax.content.0.value}}</code></dt>
-  {{#remarks}}<dd>{{{summary}}}{{{remarks}}}</dd>{{/remarks}}
-  {{^remarks}}<dd>{{{summary}}}</dd>{{/remarks}}
+    <tr id="{{id}}" data-raw-syntax="{{syntax.content.0.value}}" data-name="{{name.0.value}}">
+      <td class="enum-value"><code>{{syntax.content.0.value}}</code></td>
+      <td class="enum-name"><code>{{name.0.value}}</code></td>
+      <td class="enum-description">{{#remarks}}{{{summary}}}{{{remarks}}}{{/remarks}}{{^remarks}}{{{summary}}}{{/remarks}}</td>
+    </tr>
 {{/children}}
-</dl>
+  </tbody>
+</table>
 {{/children}}
 {{/isEnum}}
 

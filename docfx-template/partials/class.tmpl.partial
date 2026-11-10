@@ -8,6 +8,10 @@
 <h2 class="section" id="{{id}}">{{>partials/classSubtitle}}</h2>
 {{/_splitReference}}
 
+{{#inMethod}}
+<p>All available API methods are described in the following. Whenever &quot;method&quot; (or &quot;methods&quot;) is part of the name of the API method or its description, not the API method is meant but the methods that can be created and run with the control software. These methods may also be named procedures.</p>
+{{/inMethod}}
+
 {{#children}}
 
 {{#overload}}

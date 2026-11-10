@@ -19,9 +19,7 @@ namespace BrukerSprRemoteAPI
     ///
     /// The implementation is based on the Microsoft Windows Communication Foundation (WCF) technology which allows to publish and configure several different endpoints to access the API by just changing the Control Software's configuration file. This allows to write clients using a wide range of different languages, connections, and protocols to talk to the API. In order to keep the API as flexible as possible, it does not support callbacks. Updates about the system's status must be obtained using polling.
     ///
-    /// As the API is specific for the control software it is highly recommended to have a brief understanding of what you can do with the control software, what the SPR machines of Bruker a capable of, and how they (in principle) work. For that it might be helpful to take a look into the manual of the control software[^1].
-    ///
-    /// [^1]: The manual can be found in the control software itself, by clicking on "Description" in the right side bar.
+    /// As the API is specific for the control software it is highly recommended to have a brief understanding of what you can do with the control software, what the SPR machines of Bruker a capable of, and how they (in principle) work. For that it might be helpful to take a look into the manual of the control software, which can be found in the control software itself, by clicking on "Description" in the right side bar.
     ///
     /// ## Remote-Control Mode
     ///
@@ -76,12 +74,6 @@ namespace BrukerSprRemoteAPI
     /// ## Interface Description
     ///
     /// In order to keep the client implementation as flexible as possible, our server does not use callbacks. This means that the server is not capable of contacting the client framework actively if an error has occurred or the state of the software has changed. The client must ask in regular intervals instead (polling). Messages by the control software are queued in a thread-safe queue instead. The arguments and return types are restricted to very fundamental types like numbers, Boolean values, strings, and arrays.
-    ///
-    /// ### Methods
-    ///
-    /// In Table 1 all available API methods are listed and described. Whenever "method" (or "methods") is part of the name of the API method or its description, not the or any API method is meant but the methods that can be created and run with the control software (i.e. are part of the runset of the control software). These methods may be also named procedures.
-    ///
-    /// #### Table 1: API methods
     /// ]]>
     /// </summary>
 #if NET48
@@ -90,6 +82,8 @@ namespace BrukerSprRemoteAPI
 #endif
     public interface IBrukerSprRemoteService
     {
+        #region Get information about methods
+
         /// <summary>
         /// Returns an array of all method names that are loaded in the current runset library.
         /// </summary>
@@ -175,6 +169,10 @@ namespace BrukerSprRemoteAPI
         [Produces("application/json")]
 #endif
         string GetAssayTypeOfMethod(string methodName);
+
+        #endregion #region Get information about methods
+
+        #region Get information about runsets
 
         /// <summary>
         /// Returns an array of all runset names that are loaded in the current runset library.
@@ -276,6 +274,10 @@ namespace BrukerSprRemoteAPI
         [Produces("application/json")]
 #endif
         string[] GetMethodNamesOfRunset(string runsetName);
+
+        #endregion Get information about runsets
+
+        #region Prepare and run assays
 
         /// <summary>
         /// Selects the specified method for running. Returns 'false' if the method could not be selected. Check for error messages in that case.
@@ -683,6 +685,10 @@ namespace BrukerSprRemoteAPI
 #endif
         bool GetStandbyAfterFinish();
 
+        #endregion Prepare and run assays
+
+        #region Maintenance
+
         /// <summary>
         /// Returns an array containing the names of all maintenance commands that are available and can be run without user interaction.
         /// </summary>
@@ -713,19 +719,16 @@ namespace BrukerSprRemoteAPI
 #endif
         bool RunMaintenanceProcedure(string procedureName);
 
+        #endregion Maintenance
+
+        #region Status
+
         /// <summary>
-        /// Gets the current operation mode of the device. The meaning of the return value can be found in Table 2 of the documentation:
-        /// <para>0 = Idle.</para>
-        /// <para>1 = Paused.</para>
-        /// <para>2 = Completed.</para>
-        /// <para>10 = StandBy.</para>
-        /// <para>11 = ResetRequired.</para>
-        /// <para>12 = MaintenanceRequired.</para>
-        /// <para>13 = DoorOpen.</para>
-        /// <para>20 = Running.</para>
+        /// Gets the current operation mode of the device. The meaning of the return value can be found in the <see cref="OperationMode"/> documentation.
         /// </summary>
         /// <category>Status.</category>
-        /// <returns>Integer value representing the operation mode.</returns>
+        /// <returns>Integer value representing the operation mode.
+        /// See <see cref="OperationMode"/> for further details.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -882,5 +885,7 @@ namespace BrukerSprRemoteAPI
         [Produces("application/json")]
 #endif
         string[] GetWarnings();
+
+        #endregion Status
     }
 }
