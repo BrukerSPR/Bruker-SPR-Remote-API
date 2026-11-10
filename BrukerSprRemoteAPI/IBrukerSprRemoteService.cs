@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace BrukerSprRemoteAPI
 {
 #if NET48
-    [ServiceContract]
+    [System.CodeDom.Compiler.GeneratedCode("System.ServiceModel", "4.0.0.0")]
+    [System.ServiceModel.ServiceContract(ConfigurationName = "IBrukerSprRemoteService")]
 #endif
     public interface IBrukerSprRemoteService
     {
@@ -226,7 +227,7 @@ namespace BrukerSprRemoteAPI
         /// <returns>success status</returns>
 #if NET48
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "CreateRunset?methodNames={methodNames}", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(BodyStyle = WebMessageBodyStyle.Wrapped)]
 #elif NET8_0
         [HttpGet("methodNames={methodNames}", Name = "CreateRunset")]
         [Produces("application/json")]
