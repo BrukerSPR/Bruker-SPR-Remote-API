@@ -8,6 +8,7 @@
     <UseWindowsForms>false</UseWindowsForms>
     <UserWPF>false</UserWPF>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <!-- Dependencies for .NET Framework 4.8 -->

@@ -9,14 +9,8 @@
             "BrukerSprRemoteAPI.csproj"
           ]
         },
-        {
-          "src": "BrukerSprRemoteAPI.Client",
-          "files": [
-            "BrukerSprRemoteAPI.Client.csproj"
-          ]
-        }
       ],
-      "dest": "api",
+      "dest": "docfx-generated",
       "includePrivateMembers": false
     }
   ],
@@ -24,18 +18,9 @@
     "content": [
       {
         "files": [
-          "api/**.yml",
-          "api/index.md"
+          "docfx-generated/**.yml",
         ]
       },
-      {
-        "files": [
-          "docs/**.md",
-          "docs/**.yml",
-          "index.md",
-          "toc.yml"
-        ]
-      }
     ],
     "resource": [
       {
@@ -44,7 +29,7 @@
         ]
       }
     ],
-    "output": "_site",
+    "output": "doxfx-documentation",
     "template": [
       "default",
       "modern"
@@ -55,7 +40,7 @@
       "_enableSearch": true,
       "pdf": true,
       "pdfFileName": "API_Doku.pdf",
-      "pdfTocPage": true
+      "pdfTocPage": false
     }
   }
 }

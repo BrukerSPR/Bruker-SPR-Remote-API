@@ -30,7 +30,7 @@ namespace BrukerSprRemoteAPI
     ///
     /// The remote-control mode is started by clicking the "Remote Server" tile on the Control Software's home screen.
     ///
-    /// ![Remote Server Tile](media/img-0001.png)
+    /// ![Remote Server Tile](~/media/img-0001.png)
     ///
     /// You will get to a new page where you can see a graph with the application's recorded data and a log table showing messages that are exchanged between server and client. Once the server is started, all navigation buttons of the user interface are blocked, and it is not possible to leave the page while the server is running.
     ///
