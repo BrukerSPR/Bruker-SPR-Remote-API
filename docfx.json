@@ -36,11 +36,13 @@
     "output": "doxfx-documentation",
     "template": [
       "default",
-      "modern"
+      "modern",
+      "docfx-template"
     ],
     "globalMetadata": {
       "_appName": "Bruker SPR Remote API",
       "_appTitle": "Bruker SPR Remote API Documentation",
+      "_appLogoPath": "media/Logo_Bruker.svg",
       "_enableSearch": true,
       "pdf": true,
       "pdfFileName": "API_Doku.pdf",

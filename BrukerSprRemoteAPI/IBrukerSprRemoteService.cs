@@ -9,7 +9,9 @@ namespace BrukerSprRemoteAPI
 
     /// <summary>
     /// <![CDATA[
-    /// # The Bruker SPR Remote API
+    /// ![Bruker](~/media/Logo_Bruker.svg)
+    ///
+    /// # **The Bruker SPR Remote API**
     ///
     /// ## Overview
     ///

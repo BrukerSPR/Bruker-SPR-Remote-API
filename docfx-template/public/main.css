@@ -1,0 +1,72 @@
+/* Bruker SPR Remote API Documentation Custom Styling */
+
+/* Brand logo styling in navigation bar / action bar */
+.navbar-brand #logo,
+.navbar-brand img {
+  height: 32px;
+  width: auto;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+/* Logo at top right */
+.markdown.summary img[src*="Logo_Bruker"] {
+  display: block;
+  max-height: 80px;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* First heading bold and on its own page */
+.markdown.summary > h1:first-of-type,
+#the-bruker-spr-remote-api {
+  font-weight: 700;
+  clear: both;
+  margin-bottom: 30px;
+  page-break-after: always;
+  break-after: page;
+}
+
+/* Ensure next heading starts clean on the new page */
+#the-bruker-spr-remote-api + h2,
+#overview {
+  page-break-before: always;
+  break-before: page;
+}
+
+/* Page borders / margins for PDF and Print */
+@page {
+  size: A4;
+  margin: 20mm 20mm 20mm 20mm;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 20mm 20mm 20mm 20mm;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .markdown.summary img[src*="Logo_Bruker"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    max-height: 80px;
+  }
+
+  .markdown.summary > h1:first-of-type,
+  #the-bruker-spr-remote-api {
+    font-weight: bold;
+    padding-top: 150px;
+    page-break-after: always;
+    break-after: page;
+    text-align: center;
+    margin-top: 150px;
+  }
+}
