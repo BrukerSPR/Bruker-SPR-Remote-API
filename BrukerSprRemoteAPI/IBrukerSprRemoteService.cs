@@ -756,6 +756,5 @@
         [Produces("application/json")]
 #endif
         string[] GetWarnings();
-
     }
 }
