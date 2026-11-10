@@ -1,0 +1,61 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "BrukerSprRemoteAPI",
+          "files": [
+            "BrukerSprRemoteAPI.csproj"
+          ]
+        },
+        {
+          "src": "BrukerSprRemoteAPI.Client",
+          "files": [
+            "BrukerSprRemoteAPI.Client.csproj"
+          ]
+        }
+      ],
+      "dest": "api",
+      "includePrivateMembers": false
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "api/**.yml",
+          "api/index.md"
+        ]
+      },
+      {
+        "files": [
+          "docs/**.md",
+          "docs/**.yml",
+          "index.md",
+          "toc.yml"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "media/**"
+        ]
+      }
+    ],
+    "output": "_site",
+    "template": [
+      "default",
+      "modern"
+    ],
+    "globalMetadata": {
+      "_appName": "Bruker SPR Remote API",
+      "_appTitle": "Bruker SPR Remote API Documentation",
+      "_enableSearch": true,
+      "pdf": true,
+      "pdfFileName": "API_Doku.pdf",
+      "pdfTocPage": true
+    }
+  }
+}

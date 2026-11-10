@@ -16,3 +16,30 @@ This is a c++ console application which depends on Microsofts WebServices.dll. A
 
 # RemoteAppTestClientPython
 This shows how a client written in python can be created. Included in this project is the Mass1Api which allows to call the remote API functions and a Tools class providing some helper methods. This project does not contain a fully functional test client application but a simple sample script in RemoteAppTestClientPython.py which shows a basic example on how the API can be used with a client written in python.
+
+# BrukerSprRemoteAPI.Python
+This project contains the Python package for the Bruker SPR Remote API including `Mass1Api.py` and `Tools.py`. It can be installed as a Python package via `pip install .` and imported as `BrukerSprRemoteAPI` or `Mass1Api`.
+
+# Documentation (DocFX)
+Documentation for the Bruker SPR Remote API is generated using [DocFX](https://dotnet.github.io/docfx/).
+
+### Building Documentation and PDF Locally
+To restore the local tool and generate the documentation along with `API_Doku.pdf`:
+```bash
+dotnet tool restore
+dotnet docfx
+```
+To specifically run the PDF generation command:
+```bash
+dotnet docfx pdf
+```
+To build and serve the documentation locally with hot-reload:
+```bash
+dotnet docfx --serve
+```
+
+### CI/CD Pipeline
+DocFX is configured as a local .NET tool via `.config/dotnet-tools.json` and builds both HTML site and `API_Doku.pdf` in any CI/CD environment with:
+1. `dotnet tool restore`
+2. `dotnet docfx`
+An automated GitHub Actions workflow is provided at `.github/workflows/docs.yml` which produces and archives the web documentation and `API_Doku.pdf`.

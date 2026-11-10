@@ -15,3 +15,8 @@ bld/
 /.vs/
 /RemoteAppTestClientConsole/.vs/RemoteAppTestClientConsole/
 /RemoteAppTestClientConsoleNetTCP/.vs
+# DocFX documentation artifacts
+_site/
+.docfx/
+/api/*.yml
+/api/.manifest
