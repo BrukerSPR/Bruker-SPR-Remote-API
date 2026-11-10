@@ -1,191 +1,179 @@
 ﻿using System;
 using System.Linq;
-using System.Windows.Forms;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using BrukerSprRemoteAPI.Client;
 
 namespace RemoteAppTestClient
 {
     public partial class TestClientForm : Form
     {
-        private readonly SystemType _systemType;
-        private MASS1RemoteServiceClient _client;
+        private readonly SystemType systemType;
+        private BrukerSprRemoteAPIclient client;
+        private CancellationTokenSource cts;
 
-        //Methods and Runsets from the application
-        string[] _methodTypes = new string[] { };
-        string[] _runsetTypes = new string[] { };
-        string[] _methodNames = new string[] { };
-        string[] _runsetNames = new string[] { };
-        string[] _maintenanceCommands = new string[] { };
+        private string[] methodTypes = [];
+        private string[] runsetTypes = [];
+        private string[] methodNames = [];
+        private string[] runsetNames = [];
+        private string[] maintenanceCommands = [];
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
         public TestClientForm(SystemType systemType)
         {
             InitializeComponent();
-            _systemType = systemType;
+            this.systemType = systemType;
 
-            tabControl.Enabled = false;
+            this.tabControl.Enabled = false;
 
             if (systemType == SystemType.MASS1)
             {
-                btnPlateOutOrDoorOpen.Text = "Plate Out";
-                btnPlateInOrDoorClose.Text = "Plate In";
-                lblTrayOrDoorStatus.Text = "Plate Tray Status";
+                this.btnPlateOutOrDoorOpen.Text = "Plate Out";
+                this.btnPlateInOrDoorClose.Text = "Plate In";
+                this.lblTrayOrDoorStatus.Text = "Plate Tray Status";
             }
             else
             {
-                btnPlateOutOrDoorOpen.Text = "Open Door";
-                btnPlateInOrDoorClose.Text = "Close Door";
-                lblTrayOrDoorStatus.Text = "Side Door Status";
+                this.btnPlateOutOrDoorOpen.Text = "Open Door";
+                this.btnPlateInOrDoorClose.Text = "Close Door";
+                this.lblTrayOrDoorStatus.Text = "Side Door Status";
             }
         }
-
-
-        #region Connection to Server
 
         /// <summary>
         /// Connect the client to the Server
         /// </summary>
-        private void btnConnect_Click(object sender, EventArgs e)
+        private void BtnConnect_Click(object sender, EventArgs e)
         {
             try
             {
-                _client = new MASS1RemoteServiceClient();
+                this.client = new();
 
-                tabControl.Enabled = true;
+                this.tabControl.Enabled = true;
 
                 GetDeckLocationNames();
                 GetMethodsAndRunsets();
                 SetupTestClient();
 
-                _cts = new CancellationTokenSource();
+                this.cts = new CancellationTokenSource();
 
                 StartExecution();
 
-                btnConnect.Enabled = false;
-                btnDisconnect.Enabled = true;
+                this.btnConnect.Enabled = false;
+                this.btnDisconnect.Enabled = true;
 
                 StatusCheck();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Connect Exception: " + ex.ToString());
+                MessageBox.Show($"Connect Exception: {ex}");
             }
         }
 
         /// <summary>
         /// Disconnect the client from the server
         /// </summary>
-        private void btnDisconnect_Click(object sender, EventArgs e)
+        private void BtnDisconnect_Click(object sender, EventArgs e)
         {
             try
             {
                 CancelExecution();
 
-                tabControl.Enabled = false;
+                this.tabControl.Enabled = false;
 
-                _client.ChannelFactory.Close(); // forgetting this line will cause a System.Net.Sockets.SocketException
-                _client.Close();
+                this.client.ChannelFactory.Close(); // forgetting this line will cause a System.Net.Sockets.SocketException
+                this.client.Close();
 
-                btnConnect.Enabled = true;
-                btnDisconnect.Enabled = false;
+                this.btnConnect.Enabled = true;
+                this.btnDisconnect.Enabled = false;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Disconnect Exception: " + ex.ToString());
+                MessageBox.Show($"Disconnect Exception: {ex}");
             }
         }
 
         private void GetDeckLocationNames()
         {
-            comboBoxDeckLocations.Items.Clear();
-            comboBoxDeckLocations.Items.AddRange(_client.GetDeckLocations());
-            comboBoxDeckLocations.SelectedIndex = 0;
+            this.comboBoxDeckLocations.Items.Clear();
+            this.comboBoxDeckLocations.Items.AddRange(this.client.GetDeckLocations());
+            this.comboBoxDeckLocations.SelectedIndex = 0;
         }
 
         private void GetMethodsAndRunsets()
         {
-            _methodTypes = _client.GetAssayTypesOfAllMethods();
-            _runsetTypes = _client.GetAssayTypesOfAllRunsets();
-            _methodNames = _client.GetNamesOfMethods();
-            _runsetNames = _client.GetNamesOfRunsets();
-            _maintenanceCommands = _client.GetNamesOfMaintenanceProcedures();
+            this.methodTypes = this.client.GetAssayTypesOfAllMethods();
+            this.runsetTypes = this.client.GetAssayTypesOfAllRunsets();
+            this.methodNames = this.client.GetNamesOfMethods();
+            this.runsetNames = this.client.GetNamesOfRunsets();
+            this.maintenanceCommands = this.client.GetNamesOfMaintenanceProcedures();
         }
 
         private void SetupTestClient()
         {
-            comboBoxTypes.SelectedIndex = -1;
-            comboBoxTypes.Items.Clear();
+            this.comboBoxTypes.SelectedIndex = -1;
+            this.comboBoxTypes.Items.Clear();
 
-            foreach (string type in _methodTypes.Union(_runsetTypes).Distinct())
-                comboBoxTypes.Items.Add(type);
+            foreach (string type in this.methodTypes.Union(this.runsetTypes).Distinct())
+            {
+                this.comboBoxTypes.Items.Add(type);
+            }
 
-            comboBoxMethods.SelectedIndex = -1;
-            comboBoxMethods.Items.Clear();
+            this.comboBoxMethods.SelectedIndex = -1;
+            this.comboBoxMethods.Items.Clear();
 
-            // Set method names in the combo box list of option 
-            foreach (string methodName in _methodNames)
-                comboBoxMethods.Items.Add(methodName);
+            // Set method names in the combo box list of option.
+            this.comboBoxMethods.Items.AddRange(this.methodNames);
 
-            comboBoxRunsets.SelectedIndex = -1;
-            comboBoxRunsets.Items.Clear();
+            this.comboBoxRunsets.SelectedIndex = -1;
+            this.comboBoxRunsets.Items.Clear();
 
-            // Set runset names in the combo box list of option 
-            foreach (string runsetName in _runsetNames)
-                comboBoxRunsets.Items.Add(runsetName);
+            // Set runset names in the combo box list of option.
+            this.comboBoxRunsets.Items.AddRange(this.runsetNames);
 
-            comboBoxMaintenance.SelectedIndex = -1;
-            comboBoxMaintenance.Items.Clear();
+            this.comboBoxMaintenance.SelectedIndex = -1;
+            this.comboBoxMaintenance.Items.Clear();
 
-            // Set maintenance commands names in the combo box list of option 
-            foreach (string mainCmd in _maintenanceCommands)
-                comboBoxMaintenance.Items.Add(mainCmd);
+            // Set maintenance commands names in the combo box list of option.
+            this.comboBoxMaintenance.Items.AddRange(this.maintenanceCommands);
 
-            selectedRunsetListBox.Items.Clear();
+            this.selectedRunsetListBox.Items.Clear();
 
-            textBoxRunsets.Text = string.Empty;
-            textBoxRunsetType.Text = string.Empty;
-            textBoxMethods.Text = string.Empty;
-            textBoxMethodType.Text = string.Empty;
+            this.textBoxRunsets.Text = string.Empty;
+            this.textBoxRunsetType.Text = string.Empty;
+            this.textBoxMethods.Text = string.Empty;
+            this.textBoxMethodType.Text = string.Empty;
 
-            textBoxSetSamplePlateID.Text = string.Empty;
-            textBoxSetSamplePlateID.Enabled = false;
+            this.textBoxSetSamplePlateID.Text = string.Empty;
+            this.textBoxSetSamplePlateID.Enabled = false;
 
-            buttonPlateID.Visible = buttonPlateID.Enabled = false;
+            this.buttonPlateID.Visible = this.buttonPlateID.Enabled = false;
 
             SetViewState();
         }
 
         private void SetViewState()
         {
-            comboBoxMaintenance.Enabled = checkBoxrunMaintenanceCmd.Checked;
+            this.comboBoxMaintenance.Enabled = this.checkBoxrunMaintenanceCmd.Checked;
 
-            comboBoxTypes.Enabled = !checkBoxrunMaintenanceCmd.Checked;
-            comboBoxMethods.Enabled = !checkBoxrunMaintenanceCmd.Checked;
-            comboBoxRunsets.Enabled = !checkBoxrunMaintenanceCmd.Checked;
-            selectedRunsetListBox.Enabled = !checkBoxrunMaintenanceCmd.Checked;
+            this.comboBoxTypes.Enabled = !this.checkBoxrunMaintenanceCmd.Checked;
+            this.comboBoxMethods.Enabled = !this.checkBoxrunMaintenanceCmd.Checked;
+            this.comboBoxRunsets.Enabled = !this.checkBoxrunMaintenanceCmd.Checked;
+            this.selectedRunsetListBox.Enabled = !this.checkBoxrunMaintenanceCmd.Checked;
 
-            comboBoxTypes.Invalidate();
-            comboBoxMethods.Invalidate();
-            comboBoxRunsets.Invalidate();
+            this.comboBoxTypes.Invalidate();
+            this.comboBoxMethods.Invalidate();
+            this.comboBoxRunsets.Invalidate();
         }
-
-        #endregion
-
-        #region Polling
-
-        private CancellationTokenSource _cts;
 
         private void StartExecution()
         {
-            Task.Factory.StartNew(OwnCodeCancelableTask_EveryNSeconds, _cts.Token);
+            Task.Factory.StartNew(OwnCodeCancelableTask_EveryNSeconds, this.cts.Token);
         }
 
         private void CancelExecution()
         {
-            _cts.Cancel();
+            this.cts.Cancel();
         }
 
         private void OwnCodeCancelableTask_EveryNSeconds(object taskState)
@@ -194,288 +182,322 @@ namespace RemoteAppTestClient
 
             while (!token.IsCancellationRequested)
             {
-                if (checkboxPolling.Checked)
+                if (this.checkboxPolling.Checked)
+                {
                     StatusCheck();
+                }
 
                 Thread.Sleep(2000);
             }
         }
 
-        #endregion
-
-        #region Methods - Get Information About Methods or Runsets
-
         private void UpdateInfoSelectedRunset()
         {
-            selectedRunsetListBox.Items.Clear();
+            this.selectedRunsetListBox.Items.Clear();
 
-            string currentRunsetName = _client.GetNameOfCurrentRunset();
-            string currentMethodName = _client.GetNameOfCurrentMethod();
+            string currentRunsetName = this.client.GetNameOfCurrentRunset();
+            string currentMethodName = this.client.GetNameOfCurrentMethod();
 
-            selectedRunsetListBox.Items.AddRange(_client.GetMethodNamesOfRunset(currentRunsetName));
+            this.selectedRunsetListBox.Items.AddRange(this.client.GetMethodNamesOfRunset(currentRunsetName));
 
-            if (selectedRunsetListBox.Items.Count > 0)
-                selectedRunsetListBox.SelectedItem = selectedRunsetListBox.Items[0];
+            if (this.selectedRunsetListBox.Items.Count > 0)
+            {
+                this.selectedRunsetListBox.SelectedItem = this.selectedRunsetListBox.Items[0];
+            }
 
-            comboBoxTypes.Enabled = false;
-            comboBoxMethods.Enabled = false;
-            comboBoxRunsets.Enabled = false;
+            this.comboBoxTypes.Enabled = false;
+            this.comboBoxMethods.Enabled = false;
+            this.comboBoxRunsets.Enabled = false;
 
             if (InvokeRequired)
             {
-                if (_systemType == SystemType.MASS1)
+                if (this.systemType == SystemType.MASS1)
                 {
-                    Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { currentRunsetName, _client.GetAssayTypeOfRunset(currentRunsetName),
-                        currentMethodName, _client.GetAssayTypeOfMethod(currentMethodName), _client.GetSamplePlateId(selectedRunsetListBox.SelectedIndex) });
+                    Invoke(new Action<string, string, string, string, string>(SetSelectedItems), [ currentRunsetName, this.client.GetAssayTypeOfRunset(currentRunsetName),
+                        currentMethodName, this.client.GetAssayTypeOfMethod(currentMethodName), this.client.GetSamplePlateId(this.selectedRunsetListBox.SelectedIndex)]);
                 }
-                else if (_systemType == SystemType.SPR64)
+                else if (this.systemType == SystemType.SPR64)
                 {
-                    string deckLocation = string.IsNullOrWhiteSpace(comboBoxDeckLocations.Text) ? "P4" : comboBoxDeckLocations.Text;
+                    string deckLocation = string.IsNullOrWhiteSpace(this.comboBoxDeckLocations.Text) ? "P4" : this.comboBoxDeckLocations.Text;
 
-                    Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { currentRunsetName, _client.GetAssayTypeOfRunset(currentRunsetName),
-                        currentMethodName, _client.GetAssayTypeOfMethod(currentMethodName), _client.GetPlateId(selectedRunsetListBox.SelectedIndex, deckLocation) });
+                    Invoke(new Action<string, string, string, string, string>(SetSelectedItems), [ currentRunsetName, this.client.GetAssayTypeOfRunset(currentRunsetName),
+                        currentMethodName, this.client.GetAssayTypeOfMethod(currentMethodName), this.client.GetPlateId(this.selectedRunsetListBox.SelectedIndex, deckLocation)]);
                 }
             }
         }
 
         private void UpdateInfoSelectedMethod()
         {
-            selectedRunsetListBox.Items.Clear();
+            this.selectedRunsetListBox.Items.Clear();
 
-            string currentMethodName = _client.GetNameOfCurrentMethod();
+            string currentMethodName = this.client.GetNameOfCurrentMethod();
 
-            selectedRunsetListBox.Items.Add(currentMethodName);
+            this.selectedRunsetListBox.Items.Add(currentMethodName);
 
-            if (selectedRunsetListBox.Items.Count > 0)
-                selectedRunsetListBox.SelectedItem = selectedRunsetListBox.Items[0];
+            if (this.selectedRunsetListBox.Items.Count > 0)
+            {
+                this.selectedRunsetListBox.SelectedItem = this.selectedRunsetListBox.Items[0];
+            }
 
-            comboBoxTypes.Enabled = false;
-            comboBoxMethods.Enabled = false;
-            comboBoxRunsets.Enabled = false;
+            this.comboBoxTypes.Enabled = false;
+            this.comboBoxMethods.Enabled = false;
+            this.comboBoxRunsets.Enabled = false;
 
             if (InvokeRequired)
             {
-                if (_systemType == SystemType.MASS1)
+                if (this.systemType == SystemType.MASS1)
                 {
-                    Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { "", "", currentMethodName, _client.GetAssayTypeOfMethod(currentMethodName), _client.GetSamplePlateId(0) });
+                    Invoke(new Action<string, string, string, string, string>(SetSelectedItems), [string.Empty, string.Empty, currentMethodName, this.client.GetAssayTypeOfMethod(currentMethodName), this.client.GetSamplePlateId(0)]);
                 }
-                else if (_systemType == SystemType.SPR64)
+                else if (this.systemType == SystemType.SPR64)
                 {
-                    string deckLocation = string.IsNullOrWhiteSpace(comboBoxDeckLocations.Text) ? "P4" : comboBoxDeckLocations.Text;
+                    string deckLocation = string.IsNullOrWhiteSpace(this.comboBoxDeckLocations.Text) ? "P4" : this.comboBoxDeckLocations.Text;
 
-                    Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { "", "", currentMethodName, _client.GetAssayTypeOfMethod(currentMethodName), _client.GetPlateId(0, deckLocation) });
+                    Invoke(new Action<string, string, string, string, string>(SetSelectedItems), [string.Empty, string.Empty, currentMethodName, this.client.GetAssayTypeOfMethod(currentMethodName), this.client.GetPlateId(0, deckLocation)]);
                 }
             }
         }
 
         private void SetSelectedItems(string sr, string srt, string sm, string smt, string spid)
         {
-            textBoxRunsets.Text = sr;
-
-            textBoxRunsetType.Text = srt;
-
-            textBoxMethods.Text = sm;
-
-            textBoxMethodType.Text = smt;
-
-            textBoxSetSamplePlateID.Text = spid;
+            this.textBoxRunsets.Text = sr;
+            this.textBoxRunsetType.Text = srt;
+            this.textBoxMethods.Text = sm;
+            this.textBoxMethodType.Text = smt;
+            this.textBoxSetSamplePlateID.Text = spid;
         }
 
-        private void buttonPlateID_Click(object sender, EventArgs e)
+        private void BtnPlateID_Click(object sender, EventArgs e)
         {
-            buttonPlateID.Enabled = false;
-            buttonPlateID.Visible = false;
+            this.buttonPlateID.Enabled = false;
+            this.buttonPlateID.Visible = false;
 
-            bool setPlateID = !string.IsNullOrWhiteSpace(comboBoxDeckLocations.Text) || _systemType == SystemType.SPR64 ?
-                _client.SetPlateId(selectedRunsetListBox.SelectedIndex, textBoxSetSamplePlateID.Text, comboBoxDeckLocations.Text) :
-                _client.SetSamplePlateId(selectedRunsetListBox.SelectedIndex, textBoxSetSamplePlateID.Text);
+            bool setPlateID = !string.IsNullOrWhiteSpace(this.comboBoxDeckLocations.Text) || this.systemType == SystemType.SPR64 ?
+                this.client.SetPlateId(this.selectedRunsetListBox.SelectedIndex, this.textBoxSetSamplePlateID.Text, this.comboBoxDeckLocations.Text) :
+                this.client.SetSamplePlateId(this.selectedRunsetListBox.SelectedIndex, this.textBoxSetSamplePlateID.Text);
 
             if (!setPlateID)
             {
-                if (selectedRunsetListBox.SelectedIndex > _client.GetMethodNamesOfRunset(_client.GetNameOfCurrentRunset()).Count() - 1)
+                if (this.selectedRunsetListBox.SelectedIndex > this.client.GetMethodNamesOfRunset(this.client.GetNameOfCurrentRunset()).Length - 1)
+                {
                     DisplayWarningMessage("Selected method index is out of range! Check selected method again!", !setPlateID);
+                }
                 else
+                {
                     DisplayWarningMessage("Selected method does not contain the sample plate. Check for Errors!", !setPlateID);
+                }
             }
             else
+            {
                 DisplayWarningMessage(string.Empty, !setPlateID);
+            }
         }
 
-        private void textBoxSetSamplePlateID_TextChanged(object sender, EventArgs e)
+        private void TextBoxSetSamplePlateID_TextChanged(object sender, EventArgs e)
         {
-            buttonPlateID.Visible = true;
-            buttonPlateID.Enabled = true;
+            this.buttonPlateID.Visible = true;
+            this.buttonPlateID.Enabled = true;
         }
 
-        private void selectedRunsetListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void SelectedRunsetListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            textBoxSetSamplePlateID.Enabled = true;
-            comboBoxDeckLocations.Enabled = true;
+            this.textBoxSetSamplePlateID.Enabled = true;
+            this.comboBoxDeckLocations.Enabled = true;
 
-            string currentRunsetName = _client.GetNameOfCurrentRunset();
-            string assayTypeMRunset = _client.GetAssayTypeOfRunset(currentRunsetName);
-            string currentMethodName = _client.GetNameOfCurrentMethod();
-            string assayTypeMethod = _client.GetAssayTypeOfMethod(currentMethodName);
-            string plateId = !string.IsNullOrWhiteSpace(comboBoxDeckLocations.Text) || _systemType == SystemType.SPR64 ?
-                _client.GetPlateId(selectedRunsetListBox.SelectedIndex, comboBoxDeckLocations.Text) :
-                _client.GetSamplePlateId(selectedRunsetListBox.SelectedIndex);
+            string currentRunsetName = this.client.GetNameOfCurrentRunset();
+            string assayTypeMRunset = this.client.GetAssayTypeOfRunset(currentRunsetName);
+            string currentMethodName = this.client.GetNameOfCurrentMethod();
+            string assayTypeMethod = this.client.GetAssayTypeOfMethod(currentMethodName);
+            string plateId = !string.IsNullOrWhiteSpace(this.comboBoxDeckLocations.Text) || this.systemType == SystemType.SPR64 ?
+                this.client.GetPlateId(this.selectedRunsetListBox.SelectedIndex, this.comboBoxDeckLocations.Text) :
+                this.client.GetSamplePlateId(this.selectedRunsetListBox.SelectedIndex);
 
             if (InvokeRequired)
-                Invoke(new Action<string, string, string, string, string>(SetSelectedItems), new object[] { currentRunsetName, assayTypeMRunset, currentMethodName, assayTypeMethod, plateId });
-            else
-                SetSelectedItems(currentRunsetName, assayTypeMRunset, currentMethodName, assayTypeMethod, plateId);              
-        }
-
-        #endregion
-
-        #region Methods 
-
-        private void comboBoxTypes_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBoxTypes.SelectedIndex > -1)
             {
-                comboBoxMethods.Items.Clear();
-                comboBoxRunsets.Items.Clear();
-
-                // Set method names in the combo box list of option 
-                foreach (string methodName in _client.GetNamesOfMethodsOfAssayType(comboBoxTypes.SelectedItem.ToString()))
-                    comboBoxMethods.Items.Add(methodName);
-
-
-                // Set runset names in the combo box list of option 
-                foreach (string runsetName in _client.GetNamesOfRunsetsOfAssayType(comboBoxTypes.SelectedItem.ToString()))
-                    comboBoxRunsets.Items.Add(runsetName);
-
-                comboBoxMethods.Enabled = (comboBoxMethods.Items.Count != 0);
-                comboBoxRunsets.Enabled = (comboBoxRunsets.Items.Count != 0);
+                Invoke(new Action<string, string, string, string, string>(SetSelectedItems), [currentRunsetName, assayTypeMRunset, currentMethodName, assayTypeMethod, plateId]);
+            }
+            else
+            {
+                SetSelectedItems(currentRunsetName, assayTypeMRunset, currentMethodName, assayTypeMethod, plateId);
             }
         }
 
-        private void comboBoxMethods_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxTypes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxMethods.SelectedIndex > -1)
+            if (this.comboBoxTypes.SelectedIndex > -1)
             {
-                bool selectMethod = _client.SelectMethod(comboBoxMethods.SelectedItem.ToString());
+                this.comboBoxMethods.Items.Clear();
+                this.comboBoxRunsets.Items.Clear();
+
+                // Set method names in the combo box list of option.
+                this.comboBoxMethods.Items.AddRange(this.client.GetNamesOfMethodsOfAssayType(this.comboBoxTypes.SelectedItem.ToString()));
+
+                // Set runset names in the combo box list of option.
+                this.comboBoxRunsets.Items.AddRange(this.client.GetNamesOfRunsetsOfAssayType(this.comboBoxTypes.SelectedItem.ToString()));
+
+                this.comboBoxMethods.Enabled = (this.comboBoxMethods.Items.Count != 0);
+                this.comboBoxRunsets.Enabled = (this.comboBoxRunsets.Items.Count != 0);
+            }
+        }
+
+        private void ComboBoxMethods_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.comboBoxMethods.SelectedIndex > -1)
+            {
+                bool selectMethod = this.client.SelectMethod(this.comboBoxMethods.SelectedItem.ToString());
 
                 if (!selectMethod)
+                {
                     DisplayWarningMessage("Can not create runset. Check Operation Mode!", !selectMethod);
+                }
                 else
+                {
                     DisplayWarningMessage(string.Empty, !selectMethod);
+                }
 
                 UpdateInfoSelectedMethod();
             }
         }
 
-        private void comboBoxRunsets_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxRunsets_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxRunsets.SelectedIndex > -1)
+            if (this.comboBoxRunsets.SelectedIndex > -1)
             {
-                bool selectedRunsetStatus = _client.SelectRunset(comboBoxRunsets.SelectedItem.ToString());
+                bool selectedRunsetStatus = this.client.SelectRunset(this.comboBoxRunsets.SelectedItem.ToString());
 
                 if (!selectedRunsetStatus)
                 {
-                    if (!_runsetNames.Contains(comboBoxMethods.SelectedItem.ToString()))
+                    if (!this.runsetNames.Contains(this.comboBoxMethods.SelectedItem.ToString()))
+                    {
                         DisplayWarningMessage("Can not find selected runset in the list. Check the name of the runset in the provided list!", !selectedRunsetStatus);
+                    }
                     else
+                    {
                         DisplayWarningMessage("Can not select runset. Check for error messages!", !selectedRunsetStatus);
+                    }
                 }
                 else
+                {
                     DisplayWarningMessage(string.Empty, !selectedRunsetStatus);
+                }
 
                 UpdateInfoSelectedRunset();
             }
         }
 
-        private void btnTypesClear_Click(object sender, EventArgs e)
+        private void BtnTypesClear_Click(object sender, EventArgs e)
         {
-            if (comboBoxTypes.SelectedIndex > -1)
+            if (this.comboBoxTypes.SelectedIndex > -1)
             {
-                comboBoxTypes.SelectedIndex = -1;
+                this.comboBoxTypes.SelectedIndex = -1;
 
                 SetupTestClient();
             }
         }
 
-        private void checkBoxRunMaintenanceCmd_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxRunMaintenanceCmd_CheckedChanged(object sender, EventArgs e)
         {
+            this.comboBoxMaintenance.Enabled = this.checkBoxrunMaintenanceCmd.Checked;
 
-            comboBoxMaintenance.Enabled = checkBoxrunMaintenanceCmd.Checked;
-
-            comboBoxTypes.Enabled = !checkBoxrunMaintenanceCmd.Checked;
-            comboBoxMethods.Enabled = !checkBoxrunMaintenanceCmd.Checked;
-            comboBoxRunsets.Enabled = !checkBoxrunMaintenanceCmd.Checked;
-            selectedRunsetListBox.Enabled = !checkBoxrunMaintenanceCmd.Checked;
+            this.comboBoxTypes.Enabled = !this.checkBoxrunMaintenanceCmd.Checked;
+            this.comboBoxMethods.Enabled = !this.checkBoxrunMaintenanceCmd.Checked;
+            this.comboBoxRunsets.Enabled = !this.checkBoxrunMaintenanceCmd.Checked;
+            this.selectedRunsetListBox.Enabled = !this.checkBoxrunMaintenanceCmd.Checked;
         }
 
-        private void btnStart_Click(object sender, EventArgs e)
+        private void BtnStart_Click(object sender, EventArgs e)
         {
-
-            int operationMode = _client.GetOperationMode();
+            int operationMode = this.client.GetOperationMode();
 
             if (operationMode == 1)
             {
-                bool startStatus = _client.ResumeRunset();
+                bool startStatus = this.client.ResumeRunset();
 
                 if (!startStatus)
-                    DisplayWarningMessage("Can not resume runset. Check for errors!.", !startStatus);
-                else
-                    DisplayWarningMessage(string.Empty, !startStatus);
-            }
-            else
-            {
-
-                bool startStatus = false;
-
-                if (checkBoxrunMaintenanceCmd.Checked)
                 {
-                    if (comboBoxMaintenance.SelectedIndex >= 0)
-                        startStatus = _client.RunMaintenanceProcedure(_client.GetNamesOfMaintenanceProcedures()[comboBoxMaintenance.SelectedIndex]);
+                    DisplayWarningMessage("Can not resume runset. Check for errors!.", !startStatus);
                 }
                 else
                 {
-                    if (selectedRunsetListBox.SelectedIndex > 0)
-                        _client.StartSelectedRunsetFrom(selectedRunsetListBox.SelectedIndex);
+                    DisplayWarningMessage(string.Empty, !startStatus);
+                }
+            }
+            else
+            {
+                bool startStatus = false;
+
+                if (this.checkBoxrunMaintenanceCmd.Checked)
+                {
+                    if (this.comboBoxMaintenance.SelectedIndex >= 0)
+                    {
+                        startStatus = this.client.RunMaintenanceProcedure(this.client.GetNamesOfMaintenanceProcedures()[this.comboBoxMaintenance.SelectedIndex]);
+                    }
+                }
+                else
+                {
+                    if (this.selectedRunsetListBox.SelectedIndex > 0)
+                    {
+                        this.client.StartSelectedRunsetFrom(this.selectedRunsetListBox.SelectedIndex);
+                    }
                     else
-                        startStatus = _client.StartSelectedRunset();
+                    {
+                        startStatus = this.client.StartSelectedRunset();
+                    }
                 }
 
                 if (!startStatus)
                 {
                     if (operationMode == 11)
+                    {
                         DisplayWarningMessage("'Reset Required' from the maintenance commands!", !startStatus);
-                    else if (_client.GetNameOfCurrentRunset() != string.Empty)
+                    }
+                    else if (this.client.GetNameOfCurrentRunset() != string.Empty)
+                    {
                         DisplayWarningMessage("No selected Runset to Run.", !startStatus);
+                    }
                     else
+                    {
                         DisplayWarningMessage("Can not start 'Runset' check for errors.", !startStatus);
+                    }
                 }
                 else
+                {
                     DisplayWarningMessage(string.Empty, !startStatus);
+                }
 
-                //Start Selected runset 
-                _client.StartSelectedRunset();
+                // Start Selected runset.
+                this.client.StartSelectedRunset();
             }
         }
 
-        private void btnStop_Click(object sender, EventArgs e)
+        private void BtnStop_Click(object sender, EventArgs e)
         {
-            bool abortStatus = _client.AbortScript();
+            bool abortStatus = this.client.AbortScript();
 
             if (!abortStatus)
+            {
                 DisplayWarningMessage("Can not stop script as currently no script is running.", !abortStatus);
+            }
             else
+            {
                 DisplayWarningMessage(string.Empty, !abortStatus);
+            }
         }
 
-        private void btnPause_Click(object sender, EventArgs e)
+        private void BtnPause_Click(object sender, EventArgs e)
         {
-            if (comboBoxPauseAfter.SelectedIndex >= 0)
+            if (this.comboBoxPauseAfter.SelectedIndex >= 0)
             {
-                bool pauseStatus = _client.PauseRunsetAfter(comboBoxPauseAfter.SelectedIndex);
+                bool pauseStatus = this.client.PauseRunsetAfter(this.comboBoxPauseAfter.SelectedIndex);
 
                 if (!pauseStatus)
+                {
                     DisplayWarningMessage("Can not pause the script as currently no script is running.", !pauseStatus);
+                }
                 else
+                {
                     DisplayWarningMessage(string.Empty, !pauseStatus);
+                }
             }
             else
             {
@@ -483,33 +505,35 @@ namespace RemoteAppTestClient
             }
         }
 
-        private void btnReset_Click(object sender, EventArgs e)
+        private void BtnReset_Click(object sender, EventArgs e)
         {
-            bool resetStatus = _client.ResetRunset();
+            bool resetStatus = this.client.ResetRunset();
 
             if (!resetStatus)
             {
-                if (_client.GetOperationMode() == 20)
+                if (this.client.GetOperationMode() == 20)
+                {
                     DisplayWarningMessage("Can not 'Reset Runset', currently the runset is running.", !resetStatus);
+                }
                 else
+                {
                     DisplayWarningMessage("No 'Runset' is selected to reset.", !resetStatus);
+                }
             }
             else
+            {
                 DisplayWarningMessage(string.Empty, !resetStatus);
+            }
 
-            // Reset the client 
+            // Reset the client.
             SetupTestClient();
         }
 
-        #endregion
-
-        #region Status
-
         private void StatusCheck()
         {
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.Invoke(new Action(() => this.StatusCheck()));
+                Invoke(new Action(() => StatusCheck()));
                 return;
             }
 
@@ -518,13 +542,15 @@ namespace RemoteAppTestClient
             UpdateSamplePlateStatus();
             UpdateSamplePlateID();
 
-            if (_client.HasErrors())
-                UpdateErrors();
-
-            while (_client.HasMessage())
+            if (this.client.HasErrors())
             {
-                string[] message = _client.GetMessage();
-                logGridView.Rows.Add(message[0], message[1], message[2]);
+                UpdateErrors();
+            }
+
+            while (this.client.HasMessage())
+            {
+                string[] message = this.client.GetMessage();
+                this.logGridView.Rows.Add(message[0], message[1], message[2]);
             }
         }
 
@@ -532,14 +558,14 @@ namespace RemoteAppTestClient
         {
             string mode = string.Empty;
 
-            switch (_client.GetOperationMode())
+            switch (this.client.GetOperationMode())
             {
                 // Idle: The device is ready to run a script which can be a runset or a maintenance procedure
                 case 0:
                     mode = "Idle";
                     break;
 
-                // Paused: 	The device is idle but there is a runset selected that was paused during run and might be resumed. The ResetRunset method has to be called before a new runset can be started. Running a maintenance command in between is possible, however.
+                // Paused: The device is idle but there is a runset selected that was paused during run and might be resumed. The ResetRunset method has to be called before a new runset can be started. Running a maintenance command in between is possible, however.
                 case 1:
                     mode = "Paused";
                     break;
@@ -576,41 +602,48 @@ namespace RemoteAppTestClient
             }
 
             if (InvokeRequired)
-                Invoke(new Action<string>(ChangeOperationTextBox), new object[] { mode });
+            {
+                Invoke(new Action<string>(ChangeOperationTextBox), [mode]);
+            }
             else
+            {
                 ChangeOperationTextBox(mode);
+            }
         }
 
         private void ChangeOperationTextBox(string obj)
         {
-            operationTextBox.Text = obj;
+            this.operationTextBox.Text = obj;
         }
 
         private void UpdateErrors()
         {
-            lblError.Visible = true;
-            ErrorTextBox.Visible = true;
+            this.lblError.Visible = true;
+            this.ErrorTextBox.Visible = true;
 
-            while (_client.HasErrors())
+            while (this.client.HasErrors())
             {
-
                 if (InvokeRequired)
-                    Invoke(new Action<string>(ChangeChipStatusTextBox), new object[] { _client.GetErrors().First() });
+                {
+                    Invoke(new Action<string>(ChangeChipStatusTextBox), [this.client.GetErrors().First()]);
+                }
                 else
-                    ChangeErrorTextBox(_client.GetErrors().First());
+                {
+                    ChangeErrorTextBox(this.client.GetErrors().First());
+                }
             }
         }
 
         private void ChangeErrorTextBox(string obj)
         {
-            ErrorTextBox.Text = obj;
+            this.ErrorTextBox.Text = obj;
         }
 
         private void UpdateChipStatus()
         {
             string status = string.Empty;
 
-            switch(_client.IsChipDocked())
+            switch (this.client.IsChipDocked())
             {
                 // state unknown
                 case -1:
@@ -621,7 +654,7 @@ namespace RemoteAppTestClient
                 case 0:
                     status = "Undocked";
                     break;
-                
+
                 // state undocked
                 case 1:
                     status = "Docked";
@@ -629,23 +662,27 @@ namespace RemoteAppTestClient
             }
 
             if (InvokeRequired)
-                Invoke(new Action<string>(ChangeChipStatusTextBox), new object[] { status });
+            {
+                Invoke(new Action<string>(ChangeChipStatusTextBox), [status]);
+            }
             else
+            {
                 ChangeChipStatusTextBox(status);
+            }
         }
 
         private void ChangeChipStatusTextBox(string obj)
         {
-            chipStatusTextBox.Text = obj;
+            this.chipStatusTextBox.Text = obj;
         }
 
         private void UpdateSamplePlateStatus()
         {
             string status = string.Empty;
 
-            if (_systemType == SystemType.MASS1)
+            if (this.systemType == SystemType.MASS1)
             {
-                switch (_client.IsSamplePlateTrayIn())
+                switch (this.client.IsSamplePlateTrayIn())
                 {
                     // state unknown
                     case -1:
@@ -663,9 +700,9 @@ namespace RemoteAppTestClient
                         break;
                 }
             }
-            else if (_systemType == SystemType.SPR64)
+            else if (this.systemType == SystemType.SPR64)
             {
-                switch (_client.IsSideDoorOpen())
+                switch (this.client.IsSideDoorOpen())
                 {
                     // state unknown
                     case -1:
@@ -685,101 +722,107 @@ namespace RemoteAppTestClient
             }
 
             if (InvokeRequired)
-                Invoke(new Action<string>(SamplePlateStatusTextBox), new object[] { status });
+            {
+                Invoke(new Action<string>(SamplePlateStatusTextBox), [status]);
+            }
             else
+            {
                 SamplePlateStatusTextBox(status);
+            }
         }
 
         private void SamplePlateStatusTextBox(string obj)
         {
-            samplePlateStatTextBox.Text = obj;
+            this.samplePlateStatTextBox.Text = obj;
         }
 
         private void UpdateSamplePlateID()
         {
-            if (_client.GetNameOfCurrentRunset() != string.Empty)
+            if (this.client.GetNameOfCurrentRunset() != string.Empty)
             {
-                string plateId = !string.IsNullOrWhiteSpace(comboBoxDeckLocations.Text) || _systemType == SystemType.SPR64 ?
-                    _client.GetCurrentPlateId(comboBoxDeckLocations.Text) :
-                    _client.GetCurrentSamplePlateId();
+                string plateId = !string.IsNullOrWhiteSpace(this.comboBoxDeckLocations.Text) || this.systemType == SystemType.SPR64 ?
+                    this.client.GetCurrentPlateId(this.comboBoxDeckLocations.Text) :
+                    this.client.GetCurrentSamplePlateId();
 
                 if (InvokeRequired)
-                    Invoke(new Action<string>(CurrentSamplePlateIDTextBox), new object[] { plateId });
+                {
+                    Invoke(new Action<string>(CurrentSamplePlateIDTextBox), [plateId]);
+                }
                 else
+                {
                     CurrentSamplePlateIDTextBox(plateId);
+                }
             }
         }
 
         private void CurrentSamplePlateIDTextBox(string obj)
         {
-            samplePlateIDTextBox.Text = obj;
+            this.samplePlateIDTextBox.Text = obj;
         }
 
-        private void checkboxPolling_CheckedChanged(object sender, EventArgs e)
+        private void CheckboxPolling_CheckedChanged(object sender, EventArgs e)
         {
-            btnUpdateOperationMode.Enabled = btnUpdateOperationMode.Visible = !checkboxPolling.Checked;
-            btnUpdateSampePlateStatus.Enabled = btnUpdateSampePlateStatus.Visible = !checkboxPolling.Checked;
-            btnUpdateChipStatus.Enabled = btnUpdateChipStatus.Visible = !checkboxPolling.Checked;
-            btnUpdateCurrentSamplePlateID.Enabled = btnUpdateCurrentSamplePlateID.Visible = !checkboxPolling.Checked;
-            btnUpdateError.Enabled = btnUpdateError.Visible = !checkboxPolling.Checked;
+            this.btnUpdateOperationMode.Enabled = this.btnUpdateOperationMode.Visible = !this.checkboxPolling.Checked;
+            this.btnUpdateSampePlateStatus.Enabled = this.btnUpdateSampePlateStatus.Visible = !this.checkboxPolling.Checked;
+            this.btnUpdateChipStatus.Enabled = this.btnUpdateChipStatus.Visible = !this.checkboxPolling.Checked;
+            this.btnUpdateCurrentSamplePlateID.Enabled = this.btnUpdateCurrentSamplePlateID.Visible = !this.checkboxPolling.Checked;
+            this.btnUpdateError.Enabled = this.btnUpdateError.Visible = !this.checkboxPolling.Checked;
         }
 
         private void DisplayWarningMessage(string obj, bool state)
         {
-            labelLocalWarningTitle.Visible = state;
-            labelLocalWarrning.Visible = state;
-            labelLocalWarrning.Text = obj;
+            this.labelLocalWarningTitle.Visible = state;
+            this.labelLocalWarrning.Visible = state;
+            this.labelLocalWarrning.Text = obj;
         }
 
-        private void btnUpdateOperationMode_Click(object sender, EventArgs e)
+        private void BtnUpdateOperationMode_Click(object sender, EventArgs e)
         {
             UpdateOperationMode();
         }
 
-        private void btnUpdateChipStatus_Click(object sender, EventArgs e)
+        private void BtnUpdateChipStatus_Click(object sender, EventArgs e)
         {
             UpdateChipStatus();
         }
 
-        private void btnUpdateSamplePlateStatus_Click(object sender, EventArgs e)
+        private void BtnUpdateSamplePlateStatus_Click(object sender, EventArgs e)
         {
             UpdateSamplePlateStatus();
         }
 
-        private void btnUpdateCurrentSamplePlateID_Click(object sender, EventArgs e)
+        private void BtnUpdateCurrentSamplePlateID_Click(object sender, EventArgs e)
         {
             UpdateSamplePlateID();
         }
 
-        private void btnUpdateError_Click(object sender, EventArgs e)
+        private void BtnUpdateError_Click(object sender, EventArgs e)
         {
             UpdateErrors();
         }
 
-        private void btnPlateOut_Click(object sender, EventArgs e)
+        private void BtnPlateOut_Click(object sender, EventArgs e)
         {
-            if (_systemType == SystemType.MASS1)
+            if (this.systemType == SystemType.MASS1)
             {
-                _client.MoveSamplePlateTrayOut();
+                this.client.MoveSamplePlateTrayOut();
             }
-            else if (_systemType == SystemType.SPR64)
+            else if (this.systemType == SystemType.SPR64)
             {
-                _client.OpenSideDoor();
+                this.client.OpenSideDoor();
             }
         }
 
-        private void plateInButton_Click(object sender, EventArgs e)
+        private void PlateInButton_Click(object sender, EventArgs e)
         {
-            if (_systemType == SystemType.MASS1)
+            if (this.systemType == SystemType.MASS1)
             {
-                _client.MoveSamplePlateTrayIn();
+                this.client.MoveSamplePlateTrayIn();
             }
-            else if (_systemType == SystemType.SPR64)
+            else if (this.systemType == SystemType.SPR64)
             {
-                _client.CloseSideDoor();
+                this.client.CloseSideDoor();
             }
         }
-
-        #endregion
     }
 }

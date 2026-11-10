@@ -111,7 +111,7 @@
             this.btnConnect.TabIndex = 11;
             this.btnConnect.Text = "Connect";
             this.btnConnect.UseVisualStyleBackColor = false;
-            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            this.btnConnect.Click += new System.EventHandler(this.BtnConnect_Click);
             // 
             // btnDisconnect
             // 
@@ -126,7 +126,7 @@
             this.btnDisconnect.TabIndex = 12;
             this.btnDisconnect.Text = "Disconnect";
             this.btnDisconnect.UseVisualStyleBackColor = false;
-            this.btnDisconnect.Click += new System.EventHandler(this.btnDisconnect_Click);
+            this.btnDisconnect.Click += new System.EventHandler(this.BtnDisconnect_Click);
             // 
             // tabLog
             // 
@@ -204,7 +204,7 @@
             this.btnPlateInOrDoorClose.TabIndex = 59;
             this.btnPlateInOrDoorClose.Text = "Plate In";
             this.btnPlateInOrDoorClose.UseVisualStyleBackColor = false;
-            this.btnPlateInOrDoorClose.Click += new System.EventHandler(this.plateInButton_Click);
+            this.btnPlateInOrDoorClose.Click += new System.EventHandler(this.PlateInButton_Click);
             // 
             // btnPlateOutOrDoorOpen
             // 
@@ -219,7 +219,7 @@
             this.btnPlateOutOrDoorOpen.TabIndex = 58;
             this.btnPlateOutOrDoorOpen.Text = "Plate Out";
             this.btnPlateOutOrDoorOpen.UseVisualStyleBackColor = false;
-            this.btnPlateOutOrDoorOpen.Click += new System.EventHandler(this.btnPlateOut_Click);
+            this.btnPlateOutOrDoorOpen.Click += new System.EventHandler(this.BtnPlateOut_Click);
             // 
             // labelLocalWarrning
             // 
@@ -268,7 +268,7 @@
             this.comboBoxTypes.Name = "comboBoxTypes";
             this.comboBoxTypes.Size = new System.Drawing.Size(182, 21);
             this.comboBoxTypes.TabIndex = 0;
-            this.comboBoxTypes.SelectedIndexChanged += new System.EventHandler(this.comboBoxTypes_SelectedIndexChanged);
+            this.comboBoxTypes.SelectedIndexChanged += new System.EventHandler(this.ComboBoxTypes_SelectedIndexChanged);
             // 
             // comboBoxMethods
             // 
@@ -277,7 +277,7 @@
             this.comboBoxMethods.Name = "comboBoxMethods";
             this.comboBoxMethods.Size = new System.Drawing.Size(182, 21);
             this.comboBoxMethods.TabIndex = 1;
-            this.comboBoxMethods.SelectedIndexChanged += new System.EventHandler(this.comboBoxMethods_SelectedIndexChanged);
+            this.comboBoxMethods.SelectedIndexChanged += new System.EventHandler(this.ComboBoxMethods_SelectedIndexChanged);
             // 
             // labelLocalWarningTitle
             // 
@@ -297,7 +297,7 @@
             this.comboBoxRunsets.Name = "comboBoxRunsets";
             this.comboBoxRunsets.Size = new System.Drawing.Size(182, 21);
             this.comboBoxRunsets.TabIndex = 2;
-            this.comboBoxRunsets.SelectedIndexChanged += new System.EventHandler(this.comboBoxRunsets_SelectedIndexChanged);
+            this.comboBoxRunsets.SelectedIndexChanged += new System.EventHandler(this.ComboBoxRunsets_SelectedIndexChanged);
             // 
             // checkBoxrunMaintenanceCmd
             // 
@@ -308,7 +308,7 @@
             this.checkBoxrunMaintenanceCmd.TabIndex = 37;
             this.checkBoxrunMaintenanceCmd.Text = "Run Maintenance Command";
             this.checkBoxrunMaintenanceCmd.UseVisualStyleBackColor = true;
-            this.checkBoxrunMaintenanceCmd.CheckedChanged += new System.EventHandler(this.checkBoxRunMaintenanceCmd_CheckedChanged);
+            this.checkBoxrunMaintenanceCmd.CheckedChanged += new System.EventHandler(this.CheckBoxRunMaintenanceCmd_CheckedChanged);
             // 
             // comboBoxMaintenance
             // 
@@ -328,7 +328,7 @@
             this.btnTypesClear.Size = new System.Drawing.Size(21, 21);
             this.btnTypesClear.TabIndex = 36;
             this.btnTypesClear.UseVisualStyleBackColor = false;
-            this.btnTypesClear.Click += new System.EventHandler(this.btnTypesClear_Click);
+            this.btnTypesClear.Click += new System.EventHandler(this.BtnTypesClear_Click);
             // 
             // lblMethods
             // 
@@ -404,7 +404,7 @@
             this.buttonPlateID.TabIndex = 49;
             this.buttonPlateID.UseVisualStyleBackColor = false;
             this.buttonPlateID.Visible = false;
-            this.buttonPlateID.Click += new System.EventHandler(this.buttonPlateID_Click);
+            this.buttonPlateID.Click += new System.EventHandler(this.BtnPlateID_Click);
             // 
             // lblCurrentRunset
             // 
@@ -443,7 +443,7 @@
             this.selectedRunsetListBox.Name = "selectedRunsetListBox";
             this.selectedRunsetListBox.Size = new System.Drawing.Size(225, 212);
             this.selectedRunsetListBox.TabIndex = 33;
-            this.selectedRunsetListBox.SelectedIndexChanged += new System.EventHandler(this.selectedRunsetListBox_SelectedIndexChanged);
+            this.selectedRunsetListBox.SelectedIndexChanged += new System.EventHandler(this.SelectedRunsetListBox_SelectedIndexChanged);
             // 
             // labelSetPlateID
             // 
@@ -472,7 +472,7 @@
             this.textBoxSetSamplePlateID.Name = "textBoxSetSamplePlateID";
             this.textBoxSetSamplePlateID.Size = new System.Drawing.Size(102, 20);
             this.textBoxSetSamplePlateID.TabIndex = 47;
-            this.textBoxSetSamplePlateID.TextChanged += new System.EventHandler(this.textBoxSetSamplePlateID_TextChanged);
+            this.textBoxSetSamplePlateID.TextChanged += new System.EventHandler(this.TextBoxSetSamplePlateID_TextChanged);
             // 
             // textBoxRunsets
             // 
@@ -544,7 +544,7 @@
             this.btnUpdateError.Size = new System.Drawing.Size(21, 21);
             this.btnUpdateError.TabIndex = 54;
             this.btnUpdateError.UseVisualStyleBackColor = false;
-            this.btnUpdateError.Click += new System.EventHandler(this.btnUpdateError_Click);
+            this.btnUpdateError.Click += new System.EventHandler(this.BtnUpdateError_Click);
             // 
             // btnUpdateCurrentSamplePlateID
             // 
@@ -556,7 +556,7 @@
             this.btnUpdateCurrentSamplePlateID.Size = new System.Drawing.Size(21, 21);
             this.btnUpdateCurrentSamplePlateID.TabIndex = 53;
             this.btnUpdateCurrentSamplePlateID.UseVisualStyleBackColor = false;
-            this.btnUpdateCurrentSamplePlateID.Click += new System.EventHandler(this.btnUpdateCurrentSamplePlateID_Click);
+            this.btnUpdateCurrentSamplePlateID.Click += new System.EventHandler(this.BtnUpdateCurrentSamplePlateID_Click);
             // 
             // btnUpdateSampePlateStatus
             // 
@@ -568,7 +568,7 @@
             this.btnUpdateSampePlateStatus.Size = new System.Drawing.Size(21, 21);
             this.btnUpdateSampePlateStatus.TabIndex = 52;
             this.btnUpdateSampePlateStatus.UseVisualStyleBackColor = false;
-            this.btnUpdateSampePlateStatus.Click += new System.EventHandler(this.btnUpdateSamplePlateStatus_Click);
+            this.btnUpdateSampePlateStatus.Click += new System.EventHandler(this.BtnUpdateSamplePlateStatus_Click);
             // 
             // btnUpdateChipStatus
             // 
@@ -580,7 +580,7 @@
             this.btnUpdateChipStatus.Size = new System.Drawing.Size(21, 21);
             this.btnUpdateChipStatus.TabIndex = 51;
             this.btnUpdateChipStatus.UseVisualStyleBackColor = false;
-            this.btnUpdateChipStatus.Click += new System.EventHandler(this.btnUpdateChipStatus_Click);
+            this.btnUpdateChipStatus.Click += new System.EventHandler(this.BtnUpdateChipStatus_Click);
             // 
             // btnUpdateOperationMode
             // 
@@ -592,7 +592,7 @@
             this.btnUpdateOperationMode.Size = new System.Drawing.Size(21, 21);
             this.btnUpdateOperationMode.TabIndex = 38;
             this.btnUpdateOperationMode.UseVisualStyleBackColor = false;
-            this.btnUpdateOperationMode.Click += new System.EventHandler(this.btnUpdateOperationMode_Click);
+            this.btnUpdateOperationMode.Click += new System.EventHandler(this.BtnUpdateOperationMode_Click);
             // 
             // operationTextBox
             // 
@@ -697,7 +697,7 @@
             this.checkboxPolling.TabIndex = 52;
             this.checkboxPolling.Text = "Turn on polling";
             this.checkboxPolling.UseVisualStyleBackColor = true;
-            this.checkboxPolling.CheckedChanged += new System.EventHandler(this.checkboxPolling_CheckedChanged);
+            this.checkboxPolling.CheckedChanged += new System.EventHandler(this.CheckboxPolling_CheckedChanged);
             // 
             // btnReset
             // 
@@ -712,7 +712,7 @@
             this.btnReset.TabIndex = 25;
             this.btnReset.Text = "Reset";
             this.btnReset.UseVisualStyleBackColor = false;
-            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            this.btnReset.Click += new System.EventHandler(this.BtnReset_Click);
             // 
             // comboBoxPauseAfter
             // 
@@ -740,7 +740,7 @@
             this.btnPause.TabIndex = 10;
             this.btnPause.Text = "Pause";
             this.btnPause.UseVisualStyleBackColor = false;
-            this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
+            this.btnPause.Click += new System.EventHandler(this.BtnPause_Click);
             // 
             // btnStop
             // 
@@ -755,7 +755,7 @@
             this.btnStop.TabIndex = 9;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = false;
-            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            this.btnStop.Click += new System.EventHandler(this.BtnStop_Click);
             // 
             // btnStart
             // 
@@ -770,7 +770,7 @@
             this.btnStart.TabIndex = 8;
             this.btnStart.Text = "Start/Resume";
             this.btnStart.UseVisualStyleBackColor = false;
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+            this.btnStart.Click += new System.EventHandler(this.BtnStart_Click);
             // 
             // tabControl
             // 

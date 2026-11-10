@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net4.8</TargetFramework>
+    <TargetFrameworks>net4.8;net8.0-windows7</TargetFrameworks>
     <UseWindowsForms>True</UseWindowsForms>
+    <UseWPF>true</UseWPF>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>RemoteAppTestClient</RootNamespace>
     <AssemblyName>RemoteAppTestClient</AssemblyName>
@@ -11,16 +12,21 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net4.8'">
     <PackageReference Include="System.ServiceModel.Http" Version="4.10.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\BrukerSprRemoteAPI\BrukerSprRemoteAPI.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="System.ServiceModel.Web" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BrukerSprRemoteAPI.Client\BrukerSprRemoteAPI.Client.csproj" />
+    <ProjectReference Include="..\BrukerSprRemoteAPI\BrukerSprRemoteAPI.csproj" />
   </ItemGroup>
 
 </Project>
