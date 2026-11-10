@@ -8,19 +8,23 @@
           "files": [
             "BrukerSprRemoteAPI.csproj"
           ]
-        },
+        }
       ],
       "dest": "docfx-generated",
-      "includePrivateMembers": false
+      "includePrivateMembers": false,
+      "filter": "docfx-filterConfig.yml"
     }
   ],
   "build": {
     "content": [
       {
         "files": [
-          "docfx-generated/**.yml",
+          "docfx-generated/**.yml"
+        ],
+        "exclude": [
+          "docfx-generated/BrukerSprRemoteAPI.yml"
         ]
-      },
+      }
     ],
     "resource": [
       {

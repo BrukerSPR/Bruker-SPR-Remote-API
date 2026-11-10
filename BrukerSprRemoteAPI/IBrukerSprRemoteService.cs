@@ -8,9 +8,6 @@ namespace BrukerSprRemoteAPI
 #endif
 
     /// <summary>
-    /// Service contract interface for the Bruker SPR Remote API.
-    /// </summary>
-    /// <remarks>
     /// <![CDATA[
     /// # The Bruker SPR Remote API
     ///
@@ -84,7 +81,7 @@ namespace BrukerSprRemoteAPI
     ///
     /// #### Table 1: API methods
     /// ]]>
-    /// </remarks>
+    /// </summary>
 #if NET48
     [System.CodeDom.Compiler.GeneratedCode("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContract(ConfigurationName = "IBrukerSprRemoteService")]
