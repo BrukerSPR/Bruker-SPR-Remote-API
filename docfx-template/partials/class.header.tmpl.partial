@@ -59,22 +59,44 @@
 
 {{#syntax.parameters.0}}
 <h4 class="section">{{__global.parameters}}</h4>
-<dl class="parameters">
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>{{__global.name}}</th>
+      <th>{{__global.type}}</th>
+      <th>{{__global.description}}</th>
+    </tr>
+  </thead>
+  <tbody>
 {{/syntax.parameters.0}}
 {{#syntax.parameters}}
-  <dt><code>{{{id}}}</code> {{{type.specName.0.value}}}</dt>
-  <dd>{{{description}}}</dd>
+  <tr>
+    <td><code>{{{id}}}</code></td>
+    <td>{{{type.specName.0.value}}}</td>
+    <td>{{{description}}}</td>
+  </tr>
 {{/syntax.parameters}}
 {{#syntax.parameters.0}}
-</dl>
+  </tbody>
+</table>
 {{/syntax.parameters.0}}
 
 {{#syntax.return}}
 <h4 class="section">{{__global.returns}}</h4>
-<dl class="parameters">
-  <dt>{{{type.specName.0.value}}}</dt>
-  <dd>{{{description}}}</dd>
-</dl>
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>{{__global.type}}</th>
+      <th>{{__global.description}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{{type.specName.0.value}}}</td>
+      <td>{{{description}}}</td>
+    </tr>
+  </tbody>
+</table>
 {{/syntax.return}}
 
 {{#syntax.typeParameters.0}}
