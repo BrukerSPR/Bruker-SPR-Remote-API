@@ -1,0 +1,20 @@
+import urllib.request
+import urllib.parse
+import json
+
+class BrukerSprRemoteAPI:
+
+    __html_space__ = "%20"
+    __space__ = " "
+
+    def __init__(self, url) :
+        self.__url = url
+
+    def __replaceSpace__(self, value: str) -> str :
+        return value.replace(self.__space__, self.__html_space__)
+
+    def CallApi(self, call) :
+        url = self.__url + str(call)
+        req = urllib.request.Request(url)
+        r = urllib.request.urlopen(req).read()
+        return json.loads(r.decode('utf-8'))
