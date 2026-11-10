@@ -1,12 +1,12 @@
-﻿#if NET48
-using System.ServiceModel;
-using System.ServiceModel.Web;
+﻿namespace BrukerSprRemoteAPI
+{
+#if NET48
+    using System.ServiceModel;
+    using System.ServiceModel.Web;
 #elif NET8_0
-using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc;
 #endif
 
-namespace BrukerSprRemoteAPI
-{
 #if NET48
     [System.CodeDom.Compiler.GeneratedCode("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContract(ConfigurationName = "IBrukerSprRemoteService")]
