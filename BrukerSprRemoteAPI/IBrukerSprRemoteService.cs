@@ -26,7 +26,6 @@ namespace BrukerSprRemoteAPI
 #endif
         string[] GetNamesOfMethods();
 
-
         /// <summary>
         /// Returns an array containing the names of all methods of the provided assay type that are loaded in the current runset library.
         /// </summary>

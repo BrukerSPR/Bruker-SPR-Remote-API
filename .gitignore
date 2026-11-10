@@ -15,3 +15,5 @@ bld/
 /.vs/
 /RemoteAppTestClientConsole/.vs/RemoteAppTestClientConsole/
 /RemoteAppTestClientConsoleNetTCP/.vs
+/RemoteAppTestClientConsole/.vs
+/RemoteAppTestClientConsoleNetTCP/.vs
