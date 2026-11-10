@@ -3,6 +3,54 @@
 <div class="markdown summary">{{{summary}}}</div>
 <div class="markdown conceptual">{{{conceptual}}}</div>
 
+<script>
+  (function() {
+    function relocateFootnotes() {
+      const footnoteRefs = document.querySelectorAll('.footnote-ref');
+      footnoteRefs.forEach(ref => {
+        const href = ref.getAttribute('href');
+        if (!href || !href.startsWith('#')) return;
+        const targetId = href.substring(1);
+        const footnoteLi = document.getElementById(targetId);
+        if (!footnoteLi) return;
+
+        let refContainer = ref.closest('p') || ref;
+        let nextSibling = refContainer.nextElementSibling;
+        while (nextSibling && !/^H[1-6]$/i.test(nextSibling.tagName)) {
+          refContainer = nextSibling;
+          nextSibling = nextSibling.nextElementSibling;
+        }
+
+        let localFootnotes = refContainer.nextElementSibling;
+        if (!localFootnotes || !localFootnotes.classList.contains('footnotes')) {
+          localFootnotes = document.createElement('div');
+          localFootnotes.className = 'footnotes';
+          localFootnotes.innerHTML = '<hr><ol></ol>';
+          refContainer.parentNode.insertBefore(localFootnotes, refContainer.nextSibling);
+        }
+
+        const ol = localFootnotes.querySelector('ol');
+        if (ol && !ol.contains(footnoteLi)) {
+          ol.appendChild(footnoteLi);
+        }
+      });
+
+      document.querySelectorAll('.footnotes').forEach(container => {
+        const ol = container.querySelector('ol');
+        if (ol && ol.children.length === 0) {
+          container.remove();
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', relocateFootnotes);
+    } else {
+      relocateFootnotes();
+    }
+  })();
+</script>
+
 {{#syntax.content.0.value}}
 <div class="codewrapper">
   <pre><code class="lang-csharp hljs">{{syntax.content.0.value}}</code></pre>

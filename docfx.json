@@ -39,6 +39,11 @@
       "modern",
       "docfx-template"
     ],
+    "markdownEngineProperties": {
+      "markdigExtensions": [
+        "Footnotes"
+      ]
+    },
     "globalMetadata": {
       "_appName": "Bruker SPR Remote API",
       "_appTitle": "Bruker SPR Remote API Documentation",
@@ -46,7 +51,8 @@
       "_enableSearch": true,
       "pdf": true,
       "pdfFileName": "API_Doku.pdf",
-      "pdfTocPage": false
+      "pdfTocPage": false,
+      "pdfFooterTemplate": "<div style=\"display:none\"></div>"
     }
   }
 }
