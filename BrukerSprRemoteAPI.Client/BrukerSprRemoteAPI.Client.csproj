@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net48;net8.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <UseWindowsForms>false</UseWindowsForms>
+    <UserWPF>false</UserWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BrukerSprRemoteAPI\BrukerSprRemoteAPI.csproj" />
+  </ItemGroup>
+
+</Project>
