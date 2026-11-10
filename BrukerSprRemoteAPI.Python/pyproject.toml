@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "BrukerSprRemoteAPI"
+version = "1.0.0"
+description = "Python client library for Bruker SPR Remote API"
+readme = "README.md"
+requires-python = ">=3.7"
+authors = [
+    { name = "Bruker" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[tool.setuptools]
+packages = ["BrukerSprRemoteAPI"]
