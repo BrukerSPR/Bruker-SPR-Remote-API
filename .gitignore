@@ -12,3 +12,6 @@ bld/
 *.csproj.user
 /RemoteAppTestClient/.vs
 *.orig
+/.vs/
+/RemoteAppTestClientConsole/.vs/RemoteAppTestClientConsole/
+/RemoteAppTestClientConsoleNetTCP/.vs

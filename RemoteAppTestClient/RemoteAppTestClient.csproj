@@ -8,10 +8,15 @@
     <RootNamespace>RemoteAppTestClient</RootNamespace>
     <AssemblyName>RemoteAppTestClient</AssemblyName>
     <Platforms>x64;x86;AnyCPU</Platforms>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ServiceModel.Http" Version="4.10.0" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.10.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BrukerSprRemoteAPI\BrukerSprRemoteAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
