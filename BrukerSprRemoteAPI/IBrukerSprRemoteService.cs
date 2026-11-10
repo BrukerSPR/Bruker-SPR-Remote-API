@@ -1,4 +1,4 @@
-﻿namespace BrukerSprRemoteAPI
+namespace BrukerSprRemoteAPI
 {
 #if NET48
     using System.ServiceModel;
@@ -7,6 +7,9 @@
     using Microsoft.AspNetCore.Mvc;
 #endif
 
+    /// <summary>
+    /// Service contract interface for the Bruker SPR Remote API.
+    /// </summary>
 #if NET48
     [System.CodeDom.Compiler.GeneratedCode("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContract(ConfigurationName = "IBrukerSprRemoteService")]
@@ -16,7 +19,7 @@
         /// <summary>
         /// Returns an array of all method names that are loaded in the current runset library.
         /// </summary>
-        /// <returns>names of all methods</returns>
+        /// <returns>Names of all methods.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -29,8 +32,8 @@
         /// <summary>
         /// Returns an array containing the names of all methods of the provided assay type that are loaded in the current runset library.
         /// </summary>
-        /// <param name="assayType">the list of assay types can be obtained using the <see cref="GetAssayTypesOfAllMethods"/></param>
-        /// <returns>names of all methods of the provided assay type</returns>
+        /// <param name="assayType">The assay type (the list of assay types can be obtained using <see cref="GetAssayTypesOfAllMethods"/>).</param>
+        /// <returns>Names of all methods of the provided assay type.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -43,7 +46,7 @@
         /// <summary>
         /// Returns an array containing the assay types of all methods that are loaded in the current runset library.
         /// </summary>
-        /// <returns>distinct array of assay types</returns>
+        /// <returns>Distinct array of assay types.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -56,7 +59,7 @@
         /// <summary>
         /// Returns the name of the method that is currently running or selected for running. Returns an empty string if there is no method selected.
         /// </summary>
-        /// <returns>method name</returns>
+        /// <returns>Method name, or an empty string if no method is selected.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -67,9 +70,9 @@
         string GetNameOfCurrentMethod();
 
         /// <summary>
-        /// Returns the assay type of the method that is currently running or selected for running.Returns an empty string if there is no method selected.
+        /// Returns the assay type of the method that is currently running or selected for running. Returns an empty string if there is no method selected.
         /// </summary>
-        /// <returns>assay type</returns>
+        /// <returns>Assay type, or an empty string if no method is selected.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -80,10 +83,10 @@
         string GetAssayTypeOfCurrentMethod();
 
         /// <summary>
-        /// Returns the assay type of the method with the given name. Returns an empty string if there is no method with the given name in the library.
+        /// Returns the assay type of the method with the given name. Returns an empty string if there is no method with the given name in the runset library.
         /// </summary>
-        /// <param name="methodName">name of a method</param>
-        /// <returns>assay type of the method</returns>
+        /// <param name="methodName">Name of a method.</param>
+        /// <returns>Assay type of the method, or an empty string if not found in the runset library.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -96,7 +99,7 @@
         /// <summary>
         /// Returns an array of all runset names that are loaded in the current runset library.
         /// </summary>
-        /// <returns>names of all runsets</returns>
+        /// <returns>Names of all runsets.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -107,10 +110,10 @@
         string[] GetNamesOfRunsets();
 
         /// <summary>
-        /// Returns an array containing the names of all methods of the provided assay type that are loaded in the current runset library.
+        /// Returns an array containing the names of all runsets of the provided assay type that are loaded in the current runset library.
         /// </summary>
-        /// <param name="assayType">the list of assay types can be obtained using the <see cref="GetAssayTypesOfAllRunsets"/></param>
-        /// <returns>names of all runsets of the provided assay type</returns>
+        /// <param name="assayType">The assay type (the list of assay types can be obtained using <see cref="GetAssayTypesOfAllRunsets"/>).</param>
+        /// <returns>Names of all runsets of the provided assay type.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -123,7 +126,7 @@
         /// <summary>
         /// Returns an array containing the assay types of all runsets that are loaded in the current runset library.
         /// </summary>
-        /// <returns>distinct array of assay types</returns>
+        /// <returns>Distinct array of assay types.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -136,7 +139,7 @@
         /// <summary>
         /// Returns the name of the runset that is currently running or selected for running. Returns an empty string if there is no runset selected.
         /// </summary>
-        /// <returns>runset name</returns>
+        /// <returns>Runset name, or an empty string if no runset is selected.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -149,7 +152,7 @@
         /// <summary>
         /// Returns the assay type of the runset that is currently running or selected for running. Returns an empty string if there is no runset selected.
         /// </summary>
-        /// <returns>assay type</returns>
+        /// <returns>Assay type, or an empty string if no runset is selected.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -160,10 +163,10 @@
         string GetAssayTypeOfCurrentRunset();
 
         /// <summary>
-        /// Returns the assay type of the runset with the given name. Returns an empty string if there is no runset with the given name in the library.
+        /// Returns the assay type of the runset with the given name. Returns an empty string if there is no runset with the given name in the runset library.
         /// </summary>
-        /// <param name="runsetName">name of a runset</param>
-        /// <returns>assay type of the runset</returns>
+        /// <param name="runsetName">Name of a runset.</param>
+        /// <returns>Assay type of the runset, or an empty string if not found in the runset library.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -176,8 +179,8 @@
         /// <summary>
         /// Returns the names of the methods in the runset with the given name.
         /// </summary>
-        /// <param name="runsetName">name of a runset</param>
-        /// <returns>ordered array of names in the runset</returns>
+        /// <param name="runsetName">Name of a runset.</param>
+        /// <returns>Ordered array of method names in the runset.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -188,11 +191,11 @@
         string[] GetMethodNamesOfRunset(string runsetName);
 
         /// <summary>
-        /// Selects the specified method for running. Returns 'false' if method could not be selected. Check for error messages in that case.
-        /// Possible reasons are that the operation mode doesn't allow to select a method or that the method with the provided name doesn't exist in the library.
+        /// Selects the specified method for running. Returns 'false' if the method could not be selected. Check for error messages in that case.
+        /// Possible reasons are that the operation mode doesn't allow to select a method or that the method with the provided name doesn't exist in the runset library.
         /// </summary>
-        /// <param name="methodName">name of a method</param>
-        /// <returns>success status</returns>
+        /// <param name="methodName">Name of a method.</param>
+        /// <returns><c>true</c> if the method was successfully selected; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -203,11 +206,11 @@
         bool SelectMethod(string methodName);
 
         /// <summary>
-        /// Selects the specified runset for running. Returns 'false' if runset could not be selected. Check for error messages in that case.
-        /// Possible reasons are that the operation mode doesn't allow to select a runset or that the runset with the provided name doesn't exist in the library.
+        /// Selects the specified runset for running. Returns 'false' if the runset could not be selected. Check for error messages in that case.
+        /// Possible reasons are that the operation mode doesn't allow to select a runset or that the runset with the provided name doesn't exist in the runset library.
         /// </summary>
-        /// <param name="runsetName">name of a runset</param>
-        /// <returns>success status</returns>
+        /// <param name="runsetName">Name of a runset.</param>
+        /// <returns><c>true</c> if the runset was successfully selected; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -219,11 +222,10 @@
 
         /// <summary>
         /// Creates a runset that contains the methods specified by the passed array of method names and selects the runset for running.
-        /// Returns 'false' if runset could not be created. Check for error messages in that case.
-        /// Possible reasons are that the operation mode doesn't allow to select a runset or that one or more methods with the provided names do not exist in the library.
+        /// Returns 'false' if the runset couldn't be created. Check for error messages in that case. Possible reasons are that the operation mode doesn't allow to select a runset or that one or more methods with the provided names do not exist in the runset library.
         /// </summary>
-        /// <param name="methodNames">ordered array of method names</param>
-        /// <returns>success status</returns>
+        /// <param name="methodNames">Ordered array of method names.</param>
+        /// <returns><c>true</c> if the runset was successfully created; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebInvoke(BodyStyle = WebMessageBodyStyle.Wrapped)]
@@ -234,13 +236,13 @@
         bool CreateRunset(string[] methodNames);
 
         /// <summary>
-        /// Assigns an id to the exchangeable plate of the method with the specified index in the currently selected runset.
-        /// Returns 'false' if method index is out of range or the method with the given index doesn't use a sample plate. Check for errors in this case.
+        /// Assigns an ID to the exchangeable plate of the method with the specified index in the currently selected runset.
+        /// Returns 'false' if the index of the method is out of range or if the method with the given index doesn't use a sample plate. Check for errors in this case.
         /// This is only implemented for MASS-1 platform and will throw a <see cref="NotSupportedException"/> on SPR #64.
         /// </summary>
-        /// <param name="methodIndex">index of the method in the runset for which the plate ID is assigned</param>
-        /// <param name="plateId">ID of the plate</param>
-        /// <returns>success status</returns>
+        /// <param name="methodIndex">Index of the method in the runset for which the plate ID is assigned.</param>
+        /// <param name="plateId">ID of the plate.</param>
+        /// <returns><c>true</c> if the plate ID was successfully assigned; otherwise, <c>false</c>.</returns>
         /// <exception cref="NotSupportedException">Thrown if not MASS-1 platform.</exception>
 #if NET48
         [OperationContract]
@@ -256,8 +258,8 @@
         /// Returns an empty string if the index is out of range, if there is no runset, no plate, or the plate doesn't have an ID assigned.
         /// This is only implemented for MASS-1 platform and will throw a <see cref="NotSupportedException"/> on SPR #64.
         /// </summary>
-        /// <param name="methodIndex">index of the method in the current runset</param>
-        /// <returns>ID of the sample plate</returns>
+        /// <param name="methodIndex">Index of the method in the current runset.</param>
+        /// <returns>ID of the sample plate, or an empty string if not available.</returns>
         /// <exception cref="NotSupportedException">Thrown if not MASS-1 platform.</exception>
 #if NET48
         [OperationContract]
@@ -269,10 +271,11 @@
         string GetSamplePlateId(int methodIndex);
 
         /// <summary>
-        /// Gets the ID of the sample plate that is currently inside the machine. Gets the ID of the current sample plate. Returns an empty string if there is no plate or ID is unknown.
+        /// Gets the ID of the sample plate that is currently inside the machine.
+        /// Returns an empty string if there is no plate inside the machine or the ID is unknown.
         /// This is only implemented for MASS-1 platform and will throw a <see cref="NotSupportedException"/> on SPR #64.
         /// </summary>
-        /// <returns>ID of the sample plate inside the machine</returns>
+        /// <returns>ID of the sample plate inside the machine, or an empty string if no plate is inside or the ID is unknown.</returns>
         /// <exception cref="NotSupportedException">Thrown if not MASS-1 platform.</exception>
 #if NET48
         [OperationContract]
@@ -284,13 +287,13 @@
         string GetCurrentSamplePlateId();
 
         /// <summary>
-        /// Assigns an id to the plate at the provided deck location of the method with the specified index in the currently selected runset.
-        /// Returns 'false' if method index is out of range or the method with the given index doesn't use a sample plate. Check for errors in this case.
+        /// Assigns an ID to the plate at the provided deck location of the method with the specified index in the currently selected runset.
+        /// Returns 'false' if the method index is out of range or the method with the given index doesn't use a sample plate. Check for errors in this case.
         /// </summary>
-        /// <param name="methodIndex">index of the method in the runset for which the plate ID is assigned</param>
-        /// /// <param name="plateId">ID of the plate</param>
-        /// <param name="deckLocation">name of the deck location where the plate is located</param>
-        /// <returns>success status</returns>
+        /// <param name="methodIndex">Index of the method in the runset for which the plate ID is assigned.</param>
+        /// <param name="plateId">ID of the plate.</param>
+        /// <param name="deckLocation">Name of the deck location where the plate is located.</param>
+        /// <returns><c>true</c> if the plate ID was successfully assigned; otherwise, <c>false</c>.</returns>
         /// <exception cref="ArgumentException">Thrown if location does not exist on deck.</exception>
 #if NET48
         [OperationContract]
@@ -305,9 +308,9 @@
         /// Gets the ID of the plate at the provided deck location of the method with the given index in the current runset.
         /// Returns an empty string if the index is out of range, if there is no runset, no plate, or the plate doesn't have an ID assigned.
         /// </summary>
-        /// <param name="methodIndex">index of the method in the current runset</param>
-        /// <param name="deckLocation">name of the deck location where the plate is located</param>
-        /// <returns>ID of the plate</returns>
+        /// <param name="methodIndex">Index of the method in the current runset.</param>
+        /// <param name="deckLocation">Name of the deck location where the plate is located.</param>
+        /// <returns>ID of the plate, or an empty string if not available.</returns>
         /// <exception cref="ArgumentException">Thrown if location does not exist on deck.</exception>
 #if NET48
         [OperationContract]
@@ -322,9 +325,10 @@
         /// Gets the ID of the plate that is currently inside the machine at the provided deck location. Returns an empty string if there is no plate or ID is unknown.
         /// This is only implemented for MASS-1 platform and will throw a <see cref="NotSupportedException"/> on SPR #64.
         /// </summary>
-        /// <param name="deckLocation">name of the deck location where the plate is located</param>
-        /// <returns>ID of the plate</returns>
+        /// <param name="deckLocation">Name of the deck location where the plate is located.</param>
+        /// <returns>ID of the plate, or an empty string if no plate is present or the ID is unknown.</returns>
         /// <exception cref="ArgumentException">Thrown if location does not exist on deck.</exception>
+        /// <exception cref="NotSupportedException">Thrown if not MASS-1 platform.</exception>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -337,7 +341,7 @@
         /// <summary>
         /// Returns an array of all deck location names.
         /// </summary>
-        /// <returns>names of all deck locations.</returns>
+        /// <returns>Names of all deck locations.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -348,11 +352,11 @@
         string[] GetDeckLocations();
 
         /// <summary>
-        /// Moves the sample plate tray out of the device so the plate mover can get or put a plate from it. Returns 'false' if this is not possible.
+        /// Moves the sample plate tray out of the machine so that the plate mover can get or put a plate from it. Returns 'false' if this is not possible.
         /// This might be the case if there is a runset or maintenance procedure currently running or if a reset is required. Check for errors in this case.
         /// This is only implemented for MASS-1 platform and will throw a <see cref="NotSupportedException"/> on SPR #64.
         /// </summary>
-        /// <returns>success status</returns>
+        /// <returns><c>true</c> if the sample plate tray was moved out; otherwise, <c>false</c>.</returns>
         /// <exception cref="NotSupportedException">Thrown if not MASS-1 platform.</exception>
 #if NET48
         [OperationContract]
@@ -365,10 +369,10 @@
 
         /// <summary>
         /// Moves the sample plate tray into the housing. Returns 'false' if this is not possible.
-        /// This might be the case if there is a runset or maintenance procedure is currently running or if a reset is required. Check for errors in this case.
+        /// This might be the case if there is a runset or a maintenance procedure is currently running or if a reset is required. Check for errors in this case.
         /// This is only implemented for MASS-1 platform and will throw a <see cref="NotSupportedException"/> on SPR #64.
         /// </summary>
-        /// <returns>success status</returns>
+        /// <returns><c>true</c> if the sample plate tray was moved in; otherwise, <c>false</c>.</returns>
         /// <exception cref="NotSupportedException">Thrown if not MASS-1 platform.</exception>
 #if NET48
         [OperationContract]
@@ -384,7 +388,7 @@
         /// This might be the case if there is a runset or maintenance procedure currently running or if a reset is required. Check for errors in this case.
         /// This is only implemented for MASS-1 platform and will throw a <see cref="NotSupportedException"/> on SPR #64.
         /// </summary>
-        /// <returns>success status</returns>
+        /// <returns><c>true</c> if the reagent plate tray was moved out; otherwise, <c>false</c>.</returns>
         /// <exception cref="NotSupportedException">Thrown if not MASS-1 platform.</exception>
 #if NET48
         [OperationContract]
@@ -400,7 +404,7 @@
         /// This might be the case if there is a runset or maintenance procedure is currently running or if a reset is required. Check for errors in this case.
         /// This is only implemented for MASS-1 platform and will throw a <see cref="NotSupportedException"/> on SPR #64.
         /// </summary>
-        /// <returns>success status</returns>
+        /// <returns><c>true</c> if the reagent plate tray was moved in; otherwise, <c>false</c>.</returns>
         /// <exception cref="NotSupportedException">Thrown if not MASS-1 platform.</exception>
 #if NET48
         [OperationContract]
@@ -415,7 +419,7 @@
         /// Opens the side door so that a plate mover can exchange a plate on the plate deck.
         /// This is only implemented for SPR #64 and will throw a <see cref="NotSupportedException"/> on MASS-1 platform.
         /// </summary>
-        /// <returns>success status</returns>
+        /// <returns><c>true</c> if the side door was opened; otherwise, <c>false</c>.</returns>
         /// <exception cref="NotSupportedException">Thrown if not SPR #64.</exception>
 #if NET48
         [OperationContract]
@@ -430,7 +434,7 @@
         /// Closes the side door after a plate mover has exchanged a plate on the plate deck.
         /// This is only implemented for SPR #64 and will throw a <see cref="NotSupportedException"/> on MASS-1 platform.
         /// </summary>
-        /// <returns>success status</returns>
+        /// <returns><c>true</c> if the side door was closed; otherwise, <c>false</c>.</returns>
         /// <exception cref="NotSupportedException">Thrown if not SPR #64.</exception>
 #if NET48
         [OperationContract]
@@ -445,7 +449,7 @@
         /// Starts the currently selected runset. Returns 'false' if this is not possible. Check for errors in this case.
         /// Possible reasons might be that the system is not ready, is on error, or there is no selected runset.
         /// </summary>
-        /// <returns>success status</returns>
+        /// <returns><c>true</c> if the runset was started; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -456,11 +460,11 @@
         bool StartSelectedRunset();
 
         /// <summary>
-        /// Starts the runset starting from the method with the given index. Returns 'false' it this is not possible. Check for errors in this case.
-        /// Possible reasons might be that the system is not ready, is on error, the index of the method is out of range, or there is no selected runset.
+        /// Starts the selected runset starting from the method with the given index. Returns 'false' if this is not possible. Check for errors in this case.
+        /// Possible reasons might be that the system is not ready, is on error, the index of the method is out of range, or no runset is selected.
         /// </summary>
-        /// <param name="methodIndex">index of the method in the runset from which the runset is started</param>
-        /// <returns>success status</returns>
+        /// <param name="methodIndex">Index of the method in the runset from which the runset is started.</param>
+        /// <returns><c>true</c> if the runset was started; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -471,10 +475,11 @@
         bool StartSelectedRunsetFrom(int methodIndex);
 
         /// <summary>
-        /// Pauses the runset that is currently running. The mode argument sets when the runset is paused. Returns 'false' if this is not possible because there is currently no runset running.
+        /// Pauses the runset that is currently running. The pauseMode argument sets when the runset is paused (1 = after current command, 2 = after current cycle, 3 = after current method).
+        /// Returns 'false' if this is not possible because there is currently no runset running.
         /// </summary>
-        /// <param name="pauseMode">1 = pause after current command, 2 = pause after current cycle, 3 = pause after current method</param>
-        /// <returns>success status</returns>
+        /// <param name="pauseMode">1 = pause after current command, 2 = pause after current cycle, 3 = pause after current method.</param>
+        /// <returns><c>true</c> if the runset was paused; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -485,10 +490,10 @@
         bool PauseRunsetAfter(int pauseMode);
 
         /// <summary>
-        /// Resumes the paused runset where it was paused. Returns false if this is not possible. Check for errors in this case.
-        /// Reasons might be that the operation mode is different from 'paused' or device is not ready or on error.
+        /// Resumes the paused runset where it was paused. Returns 'false' if this is not possible. Check for errors in this case.
+        /// Reasons might be that the operation mode is different from 'paused' or the device is not ready or on error.
         /// </summary>
-        /// <returns>success status</returns>
+        /// <returns><c>true</c> if the runset was resumed; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -500,9 +505,9 @@
 
         /// <summary>
         /// Resets the status of the runset after it was interrupted. Returns 'false' if this is not possible because the runset is currently running or if there is no runset to reset.
-        /// Running the reset method multiple times on the same runset is possible, however.
+        /// Running the reset method multiple times on the same runset is possible.
         /// </summary>
-        /// <returns>success status</returns>
+        /// <returns><c>true</c> if the runset was reset; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -514,9 +519,9 @@
 
         /// <summary>
         /// Aborts the currently running script immediately. That can either be a runset or a maintenance command. Returns 'false' if this is not possible because there is nothing running
-        /// or running script is already a cancel script (since the device runs a script to clean up the flow cell when interrupted in the middle of an injection).
+        /// or the running script is already a cancel script (since the device runs a script to clean up the flow cell when interrupted in the middle of an injection).
         /// </summary>
-        /// <returns>success status</returns>
+        /// <returns><c>true</c> if the script was aborted; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -527,9 +532,9 @@
         bool AbortScript();
 
         /// <summary>
-        /// Leaves the standby mode. Returns false if the machine is not in standby mode when this procedure is called.
+        /// Leaves the standby mode. Returns 'false' if the machine is not in standby mode when this API method is called.
         /// </summary>
-        /// <returns>false if machine is not in standby</returns>
+        /// <returns><c>true</c> if the machine left standby mode; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -542,8 +547,8 @@
         /// <summary>
         /// Sets whether the device should go into standby mode after the runset has finished. Always return true.
         /// </summary>
-        /// <param name="goToStandby">option whether machine goes to standby</param>
-        /// <returns>always true</returns>
+        /// <param name="goToStandby">Option whether the device should go into standby mode after the runset has finished.</param>
+        /// <returns>Always <c>true</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -556,7 +561,7 @@
         /// <summary>
         /// Gets whether the device should go into standby mode after the runset has finished.
         /// </summary>
-        /// <returns>true if device goes to standby on after finishing runsets</returns>
+        /// <returns><c>true</c> if the device goes into standby mode after finishing the runset; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -567,9 +572,9 @@
         bool GetStandbyAfterFinish();
 
         /// <summary>
-        /// Returns an array containing the names of the all maintenance commands that are available and can be run without user interaction.
+        /// Returns an array containing the names of all maintenance commands that are available and can be run without user interaction.
         /// </summary>
-        /// <returns>names of available maintenance procedures</returns>
+        /// <returns>Names of all available maintenance procedures.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -581,10 +586,10 @@
 
         /// <summary>
         /// Starts the maintenance procedure with the given name. Returns 'false' if this is not possible. Check for errors in this case.
-        /// Reasons might be that the device is not ready or there is already something running. Check for errors in this case.
+        /// Reasons might be that the device is not ready or there is already something running.
         /// </summary>
-        /// <param name="procedureName">name of the maintenance procedure to be run</param>
-        /// <returns>success status</returns>
+        /// <param name="procedureName">Name of the maintenance procedure to be run.</param>
+        /// <returns><c>true</c> if the maintenance procedure was started; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json)]
@@ -595,18 +600,17 @@
         bool RunMaintenanceProcedure(string procedureName);
 
         /// <summary>
-        /// Gets the current operation mode of the device. The meaning of the return value can be found in a separate table.
+        /// Gets the current operation mode of the device. The meaning of the return value can be found in Table 2 of the documentation:
+        /// <para>0 = Idle.</para>
+        /// <para>1 = Paused.</para>
+        /// <para>2 = Completed.</para>
+        /// <para>10 = StandBy.</para>
+        /// <para>11 = ResetRequired.</para>
+        /// <para>12 = MaintenanceRequired.</para>
+        /// <para>13 = DoorOpen.</para>
+        /// <para>20 = Running.</para>
         /// </summary>
-        /// <returns>number that gives information about the operation mode:
-        ///  0  Idle
-        ///  1  Paused
-        ///  2  Completed
-        /// 10  StandBy
-        /// 11  ResetRequired
-        /// 12  MaintenanceRequired
-        /// 13  DoorOpen
-        /// 20  Running
-        /// </returns>
+        /// <returns>Integer value representing the operation mode.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -617,9 +621,9 @@
         int GetOperationMode();
 
         /// <summary>
-        /// Checks whether a chip is docked.
+        /// Checks whether a chip is docked. Returns '1' = docked, '0' = undocked, '-1' = unknown.
         /// </summary>
-        /// <returns>1 = docked, 0 = undocked, -1 = unknown </returns>
+        /// <returns>1 = docked, 0 = undocked, -1 = unknown.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -630,11 +634,10 @@
         int IsChipDocked();
 
         /// <summary>
-        /// Checks whether the sample plate tray is driven into the device.
-        /// This is only implemented for MASS-1 platform and will throw a
-        /// <see cref="NotSupportedException"/> on SPR #64.
+        /// Checks whether the sample plate tray is inside the machine. Returns '1' = inside, '0' = outside, '-1' = unknown.
+        /// This is only implemented for MASS-1 platform and will throw a <see cref="NotSupportedException"/> on SPR #64.
         /// </summary>
-        /// <returns>1 = tray in, 0 = tray out, -1 = unknown</returns>
+        /// <returns>1 = inside, 0 = outside, -1 = unknown.</returns>
         /// <exception cref="NotSupportedException">Thrown if not MASS-1 platform.</exception>
 #if NET48
         [OperationContract]
@@ -646,11 +649,10 @@
         int IsSamplePlateTrayIn();
 
         /// <summary>
-        /// Checks whether the reagent plate tray is driven into the device.
-        /// This is only implemented for MASS-1 platform and will throw a
-        /// <see cref="NotSupportedException"/> on SPR #64.
+        /// Checks whether the reagent plate tray is inside the machine. Returns '1' = inside, '0' = outside, '-1' = unknown.
+        /// This is only implemented for MASS-1 platform and will throw a <see cref="NotSupportedException"/> on SPR #64.
         /// </summary>
-        /// <returns>1 = tray in, 0 = tray out, -1 = unknown</returns>
+        /// <returns>1 = inside, 0 = outside, -1 = unknown.</returns>
         /// <exception cref="NotSupportedException">Thrown if not MASS-1 platform.</exception>
 #if NET48
         [OperationContract]
@@ -662,11 +664,10 @@
         int IsReagentPlateTrayIn();
 
         /// <summary>
-        /// Checks whether the side door is open.
-        /// This is only implemented for SPR #64 and will throw a
-        /// <see cref="NotSupportedException"/> on MASS-1 platform.
+        /// Checks whether the side door is open. Returns '1' = open, '0' = closed, '-1' = unknown.
+        /// This is only implemented for SPR #64 and will throw a <see cref="NotSupportedException"/> on MASS-1 platform.
         /// </summary>
-        /// <returns>1 = open, 0 = closed, -1 = unknown</returns>
+        /// <returns>1 = open, 0 = closed, -1 = unknown.</returns>
         /// <exception cref="NotSupportedException">Thrown if not SPR #64.</exception>
 #if NET48
         [OperationContract]
@@ -680,7 +681,7 @@
         /// <summary>
         /// Checks whether the server's message loop contains at least one new message.
         /// </summary>
-        /// <returns>true if there is at least one message in the queue</returns>
+        /// <returns><c>true</c> if there is at least one message in the queue; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -692,10 +693,10 @@
 
         /// <summary>
         /// Gets the first message from the server's message queue. A message consists of three strings in an array where the first string is a time stamp formatted like yyyyMMdd-hhmmss.fff,
-        /// the second gives information about the type of message (Error, Warning, DataSaved, OperationModeChanged, ... ), and the third string is the message itself.
-        /// Call this method on a regular base using polling and check the result for null or use the HasNewMessage method first. A complete list of error types can be found in a separate table.
+        /// the second gives information about the type of message (Error, Warning, DataSaved, OperationModeChanged, …), and the third string is the message itself.
+        /// Call this method on a regular base using polling and check the result for null or use the HasMessage method first. A complete list of error types can be found in Table 3.
         /// </summary>
-        /// <returns>array of three string</returns>
+        /// <returns>Array of three strings representing the message (timestamp, type, message), or <c>null</c> if no message is available.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -708,7 +709,7 @@
         /// <summary>
         /// Checks whether there are any errors that are not covered by the operation mode.
         /// </summary>
-        /// <returns>true if something wrong with the device's status</returns>
+        /// <returns><c>true</c> if there are errors not covered by the operation mode; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -721,7 +722,7 @@
         /// <summary>
         /// Gets an array of strings with information about errors like 'no data', 'runset error', ...
         /// </summary>
-        /// <returns>array of current errors</returns>
+        /// <returns>Array of current errors.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -734,7 +735,7 @@
         /// <summary>
         /// Checks whether there are any warnings that are not covered by the operation mode.
         /// </summary>
-        /// <returns>true if something wrong with the device's status</returns>
+        /// <returns><c>true</c> if there are warnings not covered by the operation mode; otherwise, <c>false</c>.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
@@ -745,9 +746,9 @@
         bool HasWarnings();
 
         /// <summary>
-        /// Gets an array of strings with information about errors like 'temperature unstable', 'runset warning', ...
+        /// Gets an array of strings with information about warnings like 'temperature unstable', 'runset warning', ...
         /// </summary>
-        /// <returns>array of current errors</returns>
+        /// <returns>Array of current warnings.</returns>
 #if NET48
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
