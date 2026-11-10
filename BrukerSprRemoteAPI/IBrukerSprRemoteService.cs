@@ -817,7 +817,7 @@ namespace BrukerSprRemoteAPI
         /// <summary>
         /// Gets the first message from the server's message queue. A message consists of three strings in an array where the first string is a time stamp formatted like yyyyMMdd-hhmmss.fff,
         /// the second gives information about the type of message (Error, Warning, DataSaved, OperationModeChanged, …), and the third string is the message itself.
-        /// Call this method on a regular base using polling and check the result for null or use the HasMessage method first. A complete list of error types can be found in Table 3.
+        /// Call this method on a regular base using polling and check the result for null or use the HasMessage method first. A complete list of error types can be found in <see cref="ErrorTypes">Error Types</see>.
         /// </summary>
         /// <category>Status.</category>
         /// <returns>Array of three strings representing the message (timestamp, type, message), or <c>null</c> if no message is available.</returns>

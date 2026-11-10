@@ -15,10 +15,14 @@ bld/
 /.vs/
 /RemoteAppTestClientConsole/.vs/RemoteAppTestClientConsole/
 /RemoteAppTestClientConsoleNetTCP/.vs
+/BrukerSprRemoteAPI.Python/BrukerSprRemoteAPI/__pycache__/
+/BrukerSprRemoteAPI.Python/BrukerSprRemoteAPI.egg-info/
+/BrukerSprRemoteAPI.Python/dist/
+
 # DocFX documentation artifacts
 _site/
 .docfx/
 /api/*.yml
 /api/.manifest
 /docfx-generated/
-/doxfx-documentation/
+/docfx-documentation/

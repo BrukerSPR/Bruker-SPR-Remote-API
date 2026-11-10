@@ -1,0 +1,16 @@
+### YamlMime:TableOfContent
+items:
+- uid: BrukerSprRemoteAPI
+  name: BrukerSprRemoteAPI
+  type: Namespace
+  items:
+  - uid: BrukerSprRemoteAPI.IBrukerSprRemoteService
+    name: IBrukerSprRemoteService
+    type: Interface
+  - uid: BrukerSprRemoteAPI.OperationMode
+    name: OperationMode
+    type: Enum
+  - uid: BrukerSprRemoteAPI.ErrorTypes
+    name: ErrorTypes
+    type: Class
+memberLayout: SamePage

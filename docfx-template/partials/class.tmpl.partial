@@ -4,6 +4,26 @@
 
 {{#children}}
 
+{{#inField}}
+<table class="table table-bordered table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+{{#children}}
+    <tr id="{{id}}">
+      <td><code>{{name.0.value}}</code></td>
+      <td>{{#remarks}}{{{summary}}}{{{remarks}}}{{/remarks}}{{^remarks}}{{{summary}}}{{/remarks}}</td>
+    </tr>
+{{/children}}
+  </tbody>
+</table>
+{{/inField}}
+
+{{^inField}}
 {{^_splitReference}}
 <h2 class="section" id="{{id}}">{{>partials/classSubtitle}}</h2>
 {{/_splitReference}}
@@ -164,6 +184,8 @@
 {{/seealso.0}}
 
 {{/children}}
+{{/inField}}
+
 {{/children}}
 
 {{#seealso.0}}

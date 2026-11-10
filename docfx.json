@@ -19,10 +19,12 @@
     "content": [
       {
         "files": [
-          "docfx-generated/**.yml"
+          "docfx-generated/**.yml",
+          "toc.yml"
         ],
         "exclude": [
-          "docfx-generated/BrukerSprRemoteAPI.yml"
+          "docfx-generated/BrukerSprRemoteAPI.yml",
+          "docfx-generated/toc.yml"
         ]
       }
     ],
@@ -33,7 +35,7 @@
         ]
       }
     ],
-    "output": "doxfx-documentation",
+    "output": "docfx-documentation",
     "template": [
       "default",
       "modern",
