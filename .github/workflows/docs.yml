@@ -38,7 +38,7 @@ jobs:
 
       - name: Copy generated API_Doku.pdf
         run: |
-          cp doxfx-documentation/API_Doku.pdf ./API_Doku.pdf
+          cp docfx-documentation/API_Doku.pdf ./API_Doku.pdf
           
       - name: Commit generated API_Doku.pdf
         run: |
