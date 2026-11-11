@@ -28,8 +28,7 @@ jobs:
         run: dotnet test BrukerSprRemoteAPI.Python.Generator.UnitTests/BrukerSprRemoteAPI.Python.Generator.UnitTests.csproj
 
       - name: Generate Python API
-        run: |
-          dotnet run --project BrukerSprRemoteAPI.Python.Generator "BrukerSprRemoteAPI\IBrukerSprRemoteService.cs" "BrukerSprRemoteAPI.Python\BrukerSprRemoteAPI\BrukerSprRemoteAPI.py"
+        run: dotnet run --project BrukerSprRemoteAPI.Python.Generator "${{ github.workspace }}/BrukerSprRemoteAPI/IBrukerSprRemoteService.cs" "${{ github.workspace }}/BrukerSprRemoteAPI.Python/BrukerSprRemoteAPI/BrukerSprRemoteAPI.py"
 
       - name: Install Python build tools
         run: |

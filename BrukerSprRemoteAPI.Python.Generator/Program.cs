@@ -33,13 +33,25 @@ namespace BrukerSprRemoteAPI.Python.Generator
                     outputPath = args[1];
                     templateFile = Path.Combine(AppContext.BaseDirectory, ApiGenerator.TemplateFile);
                 }
-                else
+                else if (args.Length == 3)
                 {
                     interfacePath = args[0];
                     templateFile = args[1];
                     outputPath = args[2];
-                    Console.Error.WriteLine($"Not enough arguments given ({args.Length}/2). You need to call this with 2 arguments: path to interface, output path.");
+                }
+                else
+                {
+                    Console.Error.WriteLine($"Too many arguments given ({args.Length}). You need to call this with 2 arguments: path to interface, output path (or 3 arguments: path to interface, template path, output path).");
                     return 1;
+                }
+
+                if (!File.Exists(templateFile))
+                {
+                    string fallbackTemplate = Path.Combine(Path.GetDirectoryName(interfacePath) ?? string.Empty, "..", "BrukerSprRemoteAPI.Python.Generator", ApiGenerator.TemplateFile);
+                    if (File.Exists(fallbackTemplate))
+                    {
+                        templateFile = Path.GetFullPath(fallbackTemplate);
+                    }
                 }
 
                 if (!File.Exists(interfacePath))
