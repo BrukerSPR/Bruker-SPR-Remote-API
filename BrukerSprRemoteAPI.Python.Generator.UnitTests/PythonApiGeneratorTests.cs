@@ -1,5 +1,6 @@
 namespace BrukerSprRemoteAPI.Python.Generator.UnitTests
 {
+    using System;
     using System.Diagnostics;
     using System.IO;
     using System.Reflection;
@@ -17,11 +18,15 @@ namespace BrukerSprRemoteAPI.Python.Generator.UnitTests
         [SetUp]
         public void SetUp()
         {
-            // Determine project root path
+            // Determine project root path and locate interface file
             string baseDir = TestContext.CurrentContext.TestDirectory;
-            string remotingDir = Path.GetFullPath(Path.Combine(baseDir, @$"..\..\..\..\{nameof(BrukerSprRemoteAPI)}"));
-            this.interfacePath = Path.Combine(remotingDir, $"{nameof(IBrukerSprRemoteService)}.cs");
+            this.interfacePath = FindInterfacePath(baseDir);
             this.templatePath = Path.Combine(baseDir, ApiGenerator.TemplateFile);
+            if (!File.Exists(this.templatePath))
+            {
+                this.templatePath = Path.Combine(Path.GetDirectoryName(this.interfacePath)!, "..", "BrukerSprRemoteAPI.Python.Generator", ApiGenerator.TemplateFile);
+            }
+
             this.outputPath = Path.Combine(baseDir, $"{nameof(BrukerSprRemoteAPI)}.py");
         }
 
@@ -224,6 +229,45 @@ if __name__ == '__main__':
                     File.Delete(testScriptPath);
                 }
             }
+        }
+
+        private static string FindInterfacePath(string startDir)
+        {
+            string[] searchRoots =
+            [
+                startDir,
+                AppContext.BaseDirectory,
+                Directory.GetCurrentDirectory(),
+            ];
+
+            foreach (string root in searchRoots)
+            {
+                string? current = Path.GetFullPath(root);
+                while (!string.IsNullOrEmpty(current))
+                {
+                    string candidate = Path.Combine(current, nameof(BrukerSprRemoteAPI), $"{nameof(IBrukerSprRemoteService)}.cs");
+                    if (File.Exists(candidate))
+                    {
+                        return Path.GetFullPath(candidate);
+                    }
+
+                    candidate = Path.Combine(current, $"{nameof(IBrukerSprRemoteService)}.cs");
+                    if (File.Exists(candidate))
+                    {
+                        return Path.GetFullPath(candidate);
+                    }
+
+                    string? parent = Directory.GetParent(current)?.FullName;
+                    if (parent == null || parent == current)
+                    {
+                        break;
+                    }
+
+                    current = parent;
+                }
+            }
+
+            throw new FileNotFoundException($"Could not locate {nameof(IBrukerSprRemoteService)}.cs from test directories.");
         }
     }
 }

@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BrukerSprRemoteAPI\BrukerSprRemoteAPI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="BrukerSprRemoteAPI.py.template">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
