@@ -30,23 +30,23 @@ jobs:
       - name: Build Documentation and API_Doku.pdf with DocFX
         run: dotnet docfx
         
-      - name: Upload Documentation Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: docs-site
-          path: docfx-documentation/API_Doku.pdf
-
       - name: Copy generated API_Doku.pdf
+        if: |
+            (github.ref_name == 'master')
         run: |
           cp docfx-documentation/API_Doku.pdf ./API_Doku.pdf
           
       - name: Commit generated API_Doku.pdf
+        if: |
+            (github.ref_name == 'master')
         run: |
           git config --local user.name "github-actions[bot]"
           git add API_Doku.pdf
           git commit -m "Automatically updated documentation"
 
       - name: Push changes
+        if: |
+            (github.ref_name == 'master')
         uses: ad-m/github-push-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
