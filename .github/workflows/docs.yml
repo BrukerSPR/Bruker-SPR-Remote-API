@@ -19,11 +19,15 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
       - name: Restore .NET tools
         run: dotnet tool restore
 
       - name: Build Documentation and API_Doku.pdf with DocFX
-        using: 'node24'
         run: dotnet docfx
         
       - name: Upload Documentation Artifacts
