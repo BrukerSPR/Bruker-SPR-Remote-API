@@ -1,29 +1,24 @@
-import Mass1Api
-import Tools
+import os
+import sys
 
-  
+# Ensure BrukerSprRemoteAPI package is accessible when running the script directly
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'BrukerSprRemoteAPI.Python')))
+
+from BrukerSprRemoteAPI import BrukerSprRemoteAPI, Tools
+
 # create connection to API
-api = Mass1Api.Mass1Api('http://10.56.0.42:9001/bruker-spr/json/')
+api = BrukerSprRemoteAPI('http://localhost:9001/bruker-spr/json/')
 
 # create tools object to provide some helper methods
-toolbox = Tools.Tools(api)
+toolbox = Tools(api)
 toolbox.StartLogging()
 
 # enter your custom code here
 
-api.LeaveStandby()
-
 toolbox.WaitForReady()
-
 api.RunMaintenanceProcedure('Wash Needle')
-
-#toolbox.WaitForReady()
-
-#api.RunMaintenanceProcedure('Prime')
-
-#toolbox.WaitForReady()
-
-#api.RunMaintenanceProcedure('Standby Mode')
+toolbox.WaitForReady()
+print("All done.")
 
 
 

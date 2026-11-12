@@ -32,8 +32,8 @@ class Tools(object):
                 else:
                     print("??? wrong message format ???")
 
-            time.sleep(0.1)
-
+            time.sleep(10)
+            
     def _LogErrorsAndWarnings(self):
         while (True):
             if (self.__api.HasErrors()):

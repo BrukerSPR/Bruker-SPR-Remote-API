@@ -5,8 +5,7 @@
     <ProjectGuid>{609f70be-835c-4ace-b5ef-eb69e7c59ded}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>RemoteAppTestClientPython.py</StartupFile>
-    <SearchPath>
-    </SearchPath>
+    <SearchPath>..\BrukerSprRemoteAPI.Python</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>RemoteAppTestClientPython</Name>
@@ -21,13 +20,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Mass1Api.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="RemoteAppTestClientPython.py" />
-    <Compile Include="Tools.py">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

@@ -15,10 +15,10 @@ This is a platform independent c++ console application. With the application one
 This is a c++ console application which depends on Microsofts WebServices.dll. Apart from that the application has the same functionality as RemoteAppTestClientConsole. In the ReadMe.txt withing the project you will find a description on how to use Microsoft utilities to create the client code for the connection to the server (i.e. the control software).
 
 # RemoteAppTestClientPython
-This shows how a client written in python can be created. Included in this project is the Mass1Api which allows to call the remote API functions and a Tools class providing some helper methods. This project does not contain a fully functional test client application but a simple sample script in RemoteAppTestClientPython.py which shows a basic example on how the API can be used with a client written in python.
+This shows how a client written in python can be created. It uses the `BrukerSprRemoteAPI` package which allows calling the remote API functions and provides a `Tools` class with helper methods. This project does not contain a fully functional test client application but a simple sample script in `RemoteAppTestClientPython.py` which shows a basic example on how the API can be used with a client written in python.
 
 # BrukerSprRemoteAPI.Python
-This project contains the Python package for the Bruker SPR Remote API including `Mass1Api.py` and `Tools.py`. It can be installed as a Python package via `pip install .` and imported as `BrukerSprRemoteAPI` or `Mass1Api`.
+This project contains the Python package for the Bruker SPR Remote API including `BrukerSprRemoteAPI.py` and `Tools.py`. It can be installed as a Python package via `pip install .` and imported as `BrukerSprRemoteAPI`.
 
 # Documentation (DocFX)
 Documentation for the Bruker SPR Remote API is generated using [DocFX](https://dotnet.github.io/docfx/).

@@ -69,7 +69,7 @@ namespace BrukerSprRemoteAPI
     ///
     /// The webHttp endpoint can also be accessed using an arbitrary web browser. The data exchanged is based on JSON and requests can be submitted by just typing into the browser's address bar. It is hence easy to write a client in "web languages" like Python or Java Script.
     ///
-    /// A python example can be found in the RemoteAppTestClientPython project. It contains the class `Mass1Api` which allows to call the remote API functions and a `Tools` class providing some helper methods. These two classes make it trivial to write a simple script to enqueue operations. An example for such a script is `RemoteAppTestClientPython.py`.
+    /// A python example can be found in the RemoteAppTestClientPython project. It uses the `BrukerSprRemoteAPI` package which provides the `BrukerSprRemoteAPI` class to call the remote API functions and a `Tools` class providing helper methods. These classes make it trivial to write a simple script to enqueue operations. An example for such a script is `RemoteAppTestClientPython.py`.
     ///
     /// ## Interface Description
     ///

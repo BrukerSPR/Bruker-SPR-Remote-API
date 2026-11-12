@@ -26,3 +26,4 @@ _site/
 /api/.manifest
 /docfx-generated/
 /docfx-documentation/
+/RemoteAppTestClientPython/__pycache__/
