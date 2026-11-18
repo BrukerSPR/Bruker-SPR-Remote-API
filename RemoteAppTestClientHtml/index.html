@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bruker SPR Remote API - Web Client</title>
+    <link rel="icon" type="image/svg+xml" href="../media/Logo_Bruker.svg">
+    <link rel="alternate icon" href="../media/Logo_Bruker.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Top Application Header -->
+        <header class="app-header">
+            <div class="header-brand">
+                <img src="../media/Logo_Bruker.svg" alt="Bruker Logo" class="brand-logo">
+                <div class="brand-divider"></div>
+                <div class="brand-text">
+                    <h1>Bruker SPR Remote API</h1>
+                    <span class="brand-subtitle">Interactive Web Client</span>
+                </div>
+            </div>
+            <div class="header-status">
+                <div class="status-indicator">
+                    <span class="status-dot status-dot-disconnected" id="statusDot"></span>
+                    <span id="connectionStatus" class="badge badge-disconnected">Disconnected</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Connection Configuration -->
+        <section class="card connection-card">
+            <div class="card-header">
+                <h2>
+                    <svg class="header-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    Connection Configuration
+                </h2>
+                <span class="card-hint">Endpoint & Polling Settings</span>
+            </div>
+            <div class="connection-bar">
+                <div class="form-group flex-grow">
+                    <label for="apiUrl">REST Service Base URL</label>
+                    <input type="text" id="apiUrl" value="http://localhost:9001/bruker-spr/json/" placeholder="http://localhost:9001/bruker-spr/json/">
+                </div>
+                <div class="form-group poll-select-group">
+                    <label for="pollInterval">Auto-Refresh</label>
+                    <select id="pollInterval">
+                        <option value="1000">Every 1 sec</option>
+                        <option value="2000" selected>Every 2 sec</option>
+                        <option value="5000">Every 5 sec</option>
+                        <option value="0">Disabled</option>
+                    </select>
+                </div>
+                <div class="form-group button-group-inline">
+                    <button id="btnConnect" class="btn btn-primary">Connect / Test</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Dashboard 2-Column Grid -->
+        <div class="dashboard-grid">
+            <!-- Left Column: System & Procedures -->
+            <div class="dashboard-col">
+                <!-- System Status -->
+                <section class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg class="header-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>
+                            System Status
+                        </h2>
+                    </div>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-label">Operation Mode</div>
+                            <div class="status-value" id="valOperationMode">-</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Standby State</div>
+                            <div class="status-value" id="valStandby">-</div>
+                        </div>
+                        <div class="status-item status-item-full">
+                            <div class="status-label">System Errors & Warnings</div>
+                            <div class="status-value" id="valErrors">-</div>
+                        </div>
+                    </div>
+
+                    <!-- Action Groups -->
+                    <div class="control-section">
+                        <div class="control-group-block">
+                            <div class="control-group-title">Standby & System State</div>
+                            <div class="btn-group">
+                                <button id="btnLeaveStandby" class="btn btn-success">Leave Standby</button>
+                                <button id="btnEnterStandby" class="btn btn-secondary">Enter Standby</button>
+                                <button id="btnResetSystem" class="btn btn-warning">Reset System</button>
+                            </div>
+                        </div>
+                        <div class="control-group-block">
+                            <div class="control-group-title">Runset & Script Execution</div>
+                            <div class="btn-group">
+                                <button id="btnPauseBatch" class="btn btn-secondary">Pause Runset</button>
+                                <button id="btnResumeBatch" class="btn btn-secondary">Resume Runset</button>
+                                <button id="btnAbortBatch" class="btn btn-danger">Abort Script</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Maintenance Procedures -->
+                <section class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg class="header-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                            </svg>
+                            Maintenance Procedures
+                        </h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="selectProcedures">Available Procedures:</label>
+                        <select id="selectProcedures">
+                            <option value="">Click 'Query Procedures' to load</option>
+                        </select>
+                    </div>
+                    <div class="btn-group">
+                        <button id="btnLoadProcedures" class="btn btn-secondary">Query Procedures</button>
+                        <button id="btnRunProcedure" class="btn btn-primary">Run Procedure</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Methods & API Caller -->
+            <div class="dashboard-col">
+                <!-- Methods & Assays -->
+                <section class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg class="header-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            Methods & Assays
+                        </h2>
+                        <button id="btnLoadMethods" class="btn btn-sm btn-secondary">Load Method Names</button>
+                    </div>
+                    <pre id="methodsResult" class="code-view">// Click 'Load Method Names' to view</pre>
+                </section>
+
+                <!-- Interactive API Caller -->
+                <section class="card">
+                    <div class="card-header">
+                        <h2>
+                            <svg class="header-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            Interactive API Method Explorer
+                        </h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="methodSelect">Select API Method:</label>
+                        <select id="methodSelect"></select>
+                    </div>
+                    <div id="methodParamsContainer" class="params-container"></div>
+                    <div class="btn-group" style="margin-top: 12px; margin-bottom: 12px;">
+                        <button id="btnExecuteApiCall" class="btn btn-primary">Execute Call</button>
+                    </div>
+                    <pre id="apiCallResult" class="code-view">// Result will appear here</pre>
+                </section>
+            </div>
+        </div>
+
+        <!-- Activity & Event Logs -->
+        <section class="card log-card">
+            <div class="card-header">
+                <h2>
+                    <svg class="header-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="4 17 10 11 4 5"></polyline>
+                        <line x1="12" y1="19" x2="20" y2="19"></line>
+                    </svg>
+                    Live Activity Log
+                </h2>
+                <div class="card-header-actions">
+                    <span id="logCount" class="log-count-badge">0 entries</span>
+                    <button id="btnClearLogs" class="btn btn-sm btn-secondary">Clear Log</button>
+                </div>
+            </div>
+            <div id="logContainer" class="log-container"></div>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../BrukerSprRemoteAPI.JavaScript/BrukerSprRemoteAPI.js"></script>
+    <script src="../BrukerSprRemoteAPI.JavaScript/Tools.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

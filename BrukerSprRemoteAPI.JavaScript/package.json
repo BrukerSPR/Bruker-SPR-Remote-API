@@ -1,0 +1,35 @@
+{
+  "name": "bruker-spr-remote-api",
+  "version": "1.1.0",
+  "description": "JavaScript and Node.js client library for the Bruker SPR Remote REST API",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "node -e \"const { BrukerSprRemoteAPI, Tools } = require('./index'); console.log('Package loaded successfully');\""
+  },
+  "keywords": [
+    "bruker",
+    "spr",
+    "surface-plasmon-resonance",
+    "remote-api",
+    "rest",
+    "laboratory-automation",
+    "spr32",
+    "spr64"
+  ],
+  "author": "Bruker Daltonics GmbH & Co KG",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BrukerSPR/Bruker-SPR-Remote-API.git"
+  },
+  "files": [
+    "BrukerSprRemoteAPI.js",
+    "BrukerSprRemoteAPI.d.ts",
+    "Tools.js",
+    "index.js",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ]
+}

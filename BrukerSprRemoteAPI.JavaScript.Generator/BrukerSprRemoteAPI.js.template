@@ -1,0 +1,54 @@
+/**
+ * Bruker SPR Remote API JavaScript/Node.js Client.
+ * Enables programmatic interaction with the Bruker SPR Control Software REST API.
+ */
+class BrukerSprRemoteAPI {
+    /**
+     * Initializes a new instance of the BrukerSprRemoteAPI client.
+     * @param {string} url - The base REST service URL (e.g. 'http://localhost:9001/bruker-spr/json/').
+     */
+    constructor(url) {
+        if (!url || typeof url !== 'string') {
+            throw new TypeError("Parameter 'url' must be a non-empty string.");
+        }
+        this.url = url.endsWith('/') ? url : url + '/';
+    }
+
+    /**
+     * URL-encodes a parameter value.
+     * @param {*} value - The value to encode.
+     * @returns {string} Encoded string.
+     */
+    __replaceSpace__(value) {
+        return encodeURIComponent(String(value));
+    }
+
+    /**
+     * Sends an HTTP GET request to the Bruker SPR REST service.
+     * @param {string} call - The method path with query parameters.
+     * @returns {Promise<any>} The parsed JSON response.
+     */
+    async CallApi(call) {
+        const targetUrl = this.url + String(call);
+        const response = await fetch(targetUrl, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Bruker SPR Remote API error: HTTP ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+
+    /**
+     * Alias for CallApi.
+     * @param {string} call - The method path with query parameters.
+     * @returns {Promise<any>}
+     */
+    callApi(call) {
+        return this.CallApi(call);
+    }
